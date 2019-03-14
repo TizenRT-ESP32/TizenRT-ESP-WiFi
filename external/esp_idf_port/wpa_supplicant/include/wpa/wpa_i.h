@@ -78,24 +78,30 @@
  * example on how this can be done.
  */
 
-typedef void (*WPA_SEND_FUNC)(struct pbuf *pb);
+typedef void (* WPA_SEND_FUNC)(struct pbuf *pb);
 
-typedef void (*WPA_SET_ASSOC_IE)(uint8 proto, u8 *assoc_buf, u32 assoc_wpa_ie_len);
+typedef void (* WPA_SET_ASSOC_IE)(uint8 proto, u8 *assoc_buf, u32 assoc_wpa_ie_len);
 
-typedef void (*WPA_INSTALL_KEY)(enum wpa_alg alg, uint8 *addr, int key_idx, int set_tx, uint8 *seq, size_t seq_len, uint8 *key, size_t key_len, int key_entry_valid);
+typedef void (*WPA_INSTALL_KEY) (enum wpa_alg alg, uint8 *addr, int key_idx, int set_tx,
+               uint8 *seq, size_t seq_len, uint8 *key, size_t key_len, int key_entry_valid);
 
 typedef void (*WPA_DEAUTH)(uint8 reason_code);
 
 typedef void (*WPA_NEG_COMPLETE)();
 
-void wpa_register(char *payload, WPA_SEND_FUNC snd_func, WPA_SET_ASSOC_IE set_assoc_ie_func, WPA_INSTALL_KEY ppinstallkey, WPA_DEAUTH wpa_deauth, WPA_NEG_COMPLETE wpa_neg_complete);
+void wpa_register(char * payload, WPA_SEND_FUNC snd_func, \
+                                                      WPA_SET_ASSOC_IE set_assoc_ie_func, \
+                                                      WPA_INSTALL_KEY ppinstallkey, \
+                                                      WPA_DEAUTH wpa_deauth, \
+                                                      WPA_NEG_COMPLETE wpa_neg_complete);
 
 #include "pp/esf_buf.h"
 void eapol_txcb(esf_buf_t *eb);
 
 void wpa_set_profile(uint32 wpa_proto);
 
-void wpa_set_bss(char *macddr, char *bssid, uint8 pairwise_cipher, uint8 group_cipher, char *passphrase, u8 *ssid, size_t ssid_len);
+void wpa_set_bss(char *macddr, char * bssid, uint8 pairwise_cipher, uint8 group_cipher, char *passphrase, u8 *ssid, size_t ssid_len);
 
 int wpa_sm_rx_eapol(u8 *src_addr, u8 *buf, u32 len);
-#endif							/* WPA_I_H */
+#endif /* WPA_I_H */
+

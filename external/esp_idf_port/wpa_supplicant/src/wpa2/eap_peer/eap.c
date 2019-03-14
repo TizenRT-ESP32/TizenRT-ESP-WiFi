@@ -33,7 +33,7 @@
  * (session resumption).
  */
 #include <string.h>
-
+     
 #include "esp_err.h"
 
 #include "wpa/includes.h"
@@ -56,6 +56,7 @@
 #include "wpa2/eap_peer/eap_methods.h"
 #endif
 
+
 static bool gl_disable_time_check = true;
 void eap_peer_config_deinit(struct eap_sm *sm);
 void eap_peer_blob_deinit(struct eap_sm *sm);
@@ -66,25 +67,23 @@ extern bool ieee80211_unregister_wpa2_cb(void);
 #ifdef EAP_PEER_METHOD
 static struct eap_method *eap_methods = NULL;
 
-const struct eap_method *eap_peer_get_eap_method(int vendor, EapType method)
+const struct eap_method * eap_peer_get_eap_method(int vendor, EapType method)
 {
 	struct eap_method *m;
 	for (m = eap_methods; m; m = m->next) {
-		if (m->vendor == vendor && m->method == method) {
+		if (m->vendor == vendor && m->method == method)
 			return m;
-		}
 	}
 	return NULL;
 }
 
-const struct eap_method *eap_peer_get_methods(size_t *count)
+const struct eap_method * eap_peer_get_methods(size_t *count)
 {
 	int c = 0;
 	struct eap_method *m;
 
-	for (m = eap_methods; m; m = m->next) {
+	for (m = eap_methods; m; m = m->next)
 		c++;
-	}
 
 	*count = c;
 	return eap_methods;
@@ -103,12 +102,13 @@ EapType eap_peer_get_type(const char *name, int *vendor)
 	return EAP_TYPE_NONE;
 }
 
-static int eap_allowed_phase2_type(int vendor, int type)
+static int 
+eap_allowed_phase2_type(int vendor, int type)
 {
-	if (vendor != EAP_VENDOR_IETF) {
+	if (vendor != EAP_VENDOR_IETF)
 		return 0;
-	}
-	return type != EAP_TYPE_PEAP && type != EAP_TYPE_TTLS && type != EAP_TYPE_FAST;
+	return type != EAP_TYPE_PEAP && type != EAP_TYPE_TTLS &&
+		type != EAP_TYPE_FAST;
 }
 
 u32 eap_get_phase2_type(const char *name, int *vendor)
@@ -123,7 +123,8 @@ u32 eap_get_phase2_type(const char *name, int *vendor)
 	return EAP_TYPE_NONE;
 }
 
-struct eap_method_type *eap_get_phase2_types(struct eap_peer_config *config, size_t *count)
+struct eap_method_type * eap_get_phase2_types(struct eap_peer_config *config,
+		     size_t *count)
 {
 	struct eap_method_type *buf;
 	u32 method;
@@ -132,22 +133,21 @@ struct eap_method_type *eap_get_phase2_types(struct eap_peer_config *config, siz
 	const struct eap_method *methods, *m;
 
 	methods = eap_peer_get_methods(&mcount);
-	if (methods == NULL) {
+	if (methods == NULL)
 		return NULL;
-	}
 	*count = 0;
 	buf = os_malloc(mcount * sizeof(struct eap_method_type));
-	if (buf == NULL) {
+	if (buf == NULL)
 		return NULL;
-	}
 
 	for (m = methods; m; m = m->next) {
 		vendor = m->vendor;
 		method = m->method;
 		if (eap_allowed_phase2_type(vendor, method)) {
-			if (vendor == EAP_VENDOR_IETF && method == EAP_TYPE_TLS && config && config->private_key2 == NULL) {
+			if (vendor == EAP_VENDOR_IETF &&
+			    method == EAP_TYPE_TLS && config &&
+			    config->private_key2 == NULL)
 				continue;
-			}
 			buf[*count].vendor = vendor;
 			buf[*count].method = method;
 			(*count)++;
@@ -157,13 +157,13 @@ struct eap_method_type *eap_get_phase2_types(struct eap_peer_config *config, siz
 	return buf;
 }
 
-struct eap_method *eap_peer_method_alloc(int vendor, EapType method, const char *name)
+struct eap_method * eap_peer_method_alloc(int vendor, EapType method,
+		      const char *name)
 {
 	struct eap_method *eap;
 	eap = (struct eap_method *)os_zalloc(sizeof(*eap));
-	if (eap == NULL) {
+	if (eap == NULL)
 		return NULL;
-	}
 	eap->vendor = vendor;
 	eap->method = method;
 	eap->name = name;
@@ -179,20 +179,19 @@ int eap_peer_method_register(struct eap_method *method)
 {
 	struct eap_method *m, *last = NULL;
 
-	if (method == NULL || method->name == NULL) {
+	if (method == NULL || method->name == NULL)
 		return -1;
-	}
 	for (m = eap_methods; m; m = m->next) {
-		if (m->vendor == method->vendor && m->method == method->method && os_strcmp(m->name, method->name)) {
+		if (m->vendor == method->vendor &&
+		    m->method == method->method &&
+		    os_strcmp(m->name, method->name))
 			return -2;
-		}
 		last = m;
 	}
-	if (last) {
+	if (last)
 		last->next = method;
-	} else {
+	else
 		eap_methods = method;
-	}
 	return 0;
 }
 
@@ -203,11 +202,10 @@ void eap_peer_unregister_methods(void)
 		m = eap_methods;
 		eap_methods = eap_methods->next;
 
-		if (m->free) {
+		if (m->free)
 			m->free(m);
-		} else {
+		else
 			eap_peer_method_free(m);
-		}
 	}
 }
 
@@ -216,33 +214,28 @@ int eap_peer_register_methods(void)
 	int ret = 0;
 
 #ifdef EAP_MD5
-	if (ret == 0) {
+	if (ret == 0)
 		ret = eap_peer_md5_register();
-	}
 #endif
 
 #ifdef EAP_TLS
-	if (ret == 0) {
+	if (ret == 0)
 		ret = eap_peer_tls_register();
-	}
 #endif
 
 #ifdef EAP_MSCHAPv2
-	if (ret == 0) {
+	if (ret == 0)
 		ret = eap_peer_mschapv2_register();
-	}
 #endif
 
 #ifdef EAP_PEAP
-	if (ret == 0) {
+	if (ret == 0)
 		ret = eap_peer_peap_register();
-	}
 #endif
 
 #ifdef EAP_TTLS
-	if (ret == 0) {
+	if (ret == 0)
 		ret = eap_peer_ttls_register();
-	}
 #endif
 
 	return ret;
@@ -250,15 +243,14 @@ int eap_peer_register_methods(void)
 
 void eap_deinit_prev_method(struct eap_sm *sm, const char *txt)
 {
-	if (sm->m == NULL || sm->eap_method_priv == NULL) {
+	if (sm->m == NULL || sm->eap_method_priv == NULL)
 		return;
-	}
 	sm->m->deinit(sm, sm->eap_method_priv);
 	sm->eap_method_priv = NULL;
 	sm->m = NULL;
 }
 
-struct wpabuf *eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypted)
+struct wpabuf * eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypted)
 {
 	const u8 *identity;
 	size_t identity_len;
@@ -266,12 +258,14 @@ struct wpabuf *eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypte
 	struct eap_peer_config *config = eap_get_config(sm);
 
 	if (config == NULL) {
-		wpa_printf(MSG_ERROR, "EAP: Build Identity Resp-> configuration was not available\n");
+        wpa_printf(MSG_ERROR, "EAP: Build Identity Resp-> configuration was not available\n");
 		return NULL;
 	}
 
 	if (sm->m && sm->m->get_identity) {
-		identity = sm->m->get_identity(sm, sm->eap_method_priv, &identity_len);
+		identity = sm->m->get_identity(sm,
+					sm->eap_method_priv,
+					&identity_len);
 	} else if (!encrypted && config->anonymous_identity) {
 		identity = config->anonymous_identity;
 		identity_len = config->anonymous_identity_len;
@@ -281,20 +275,21 @@ struct wpabuf *eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypte
 	}
 
 	if (identity == NULL) {
-		wpa_printf(MSG_ERROR, "EAP: Build Identity Resp-> identity was not available\n");
+        wpa_printf(MSG_ERROR, "EAP: Build Identity Resp-> identity was not available\n");
 		return NULL;
 	}
 
-	eap_buf = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_IDENTITY, identity_len, EAP_CODE_RESPONSE, id);
+	eap_buf = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_IDENTITY,
+				identity_len, EAP_CODE_RESPONSE, id);
 	if (!eap_buf) {
-		return NULL;
-	}
+        return NULL;       
+    }
 
 	wpabuf_put_data(eap_buf, identity, identity_len);
 	return eap_buf;
 }
 
-struct wpabuf *eap_sm_build_nak(struct eap_sm *sm, EapType type, u8 id)
+struct wpabuf * eap_sm_build_nak(struct eap_sm *sm, EapType type, u8 id)
 {
 	size_t count = 0;
 	int found = 0;
@@ -302,23 +297,23 @@ struct wpabuf *eap_sm_build_nak(struct eap_sm *sm, EapType type, u8 id)
 	const struct eap_method *methods, *m;
 
 	methods = eap_peer_get_methods(&count);
-	if (methods == NULL) {
+	if (methods == NULL)
 		return NULL;
-	}
 
 	if (type == EAP_TYPE_EXPANDED) {
-		/*Build Expanded NAK */
-		resp = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_EXPANDED, 8 + 8 * (count + 1), EAP_CODE_RESPONSE, id);
-		if (resp == NULL) {
+		/*Build Expanded NAK*/
+		resp = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_EXPANDED,
+				     8 + 8 * (count + 1), EAP_CODE_RESPONSE, id);
+		if (resp == NULL)
 			return NULL;
-		}
 		wpabuf_put_be24(resp, EAP_VENDOR_IETF);
 		wpabuf_put_be32(resp, EAP_TYPE_NAK);
 	} else {
-		resp = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_NAK, sizeof(struct eap_hdr) + 1 + count + 1, EAP_CODE_RESPONSE, id);
-		if (resp == NULL) {
+		resp = eap_msg_alloc(EAP_VENDOR_IETF, EAP_TYPE_NAK,
+				     sizeof(struct eap_hdr) + 1 + count + 1,
+				     EAP_CODE_RESPONSE, id);
+		if (resp == NULL)
 			return NULL;
-		}
 		wpabuf_put(resp, 0);
 	}
 
@@ -327,9 +322,8 @@ struct wpabuf *eap_sm_build_nak(struct eap_sm *sm, EapType type, u8 id)
 			wpabuf_put_u8(resp, EAP_TYPE_EXPANDED);
 			wpabuf_put_be24(resp, m->vendor);
 			wpabuf_put_be32(resp, m->method);
-		} else {
+		} else
 			wpabuf_put_u8(resp, m->method);
-		}
 		found++;
 	}
 	if (!found) {
@@ -337,20 +331,20 @@ struct wpabuf *eap_sm_build_nak(struct eap_sm *sm, EapType type, u8 id)
 			wpabuf_put_u8(resp, EAP_TYPE_EXPANDED);
 			wpabuf_put_be24(resp, EAP_VENDOR_IETF);
 			wpabuf_put_be32(resp, EAP_TYPE_NONE);
-		} else {
+		} else
 			wpabuf_put_u8(resp, EAP_TYPE_NONE);
-		}
 	}
 	eap_update_len(resp);
 	return resp;
 }
 #endif
 
-int eap_peer_config_init(struct eap_sm *sm, u8 *private_key_passwd, int private_key_passwd_len)
+int eap_peer_config_init(
+	struct eap_sm *sm, u8 *private_key_passwd,
+	int private_key_passwd_len)
 {
-	if (!sm) {
+	if (!sm)
 		return -1;
-	}
 
 	sm->config.anonymous_identity = NULL;
 	sm->config.identity = NULL;
@@ -358,28 +352,27 @@ int eap_peer_config_init(struct eap_sm *sm, u8 *private_key_passwd, int private_
 	sm->config.new_password = NULL;
 
 	sm->config.private_key_passwd = private_key_passwd;
-	sm->config.client_cert = (u8 *) sm->blob[0].name;
-	sm->config.private_key = (u8 *) sm->blob[1].name;
-	sm->config.ca_cert = (u8 *) sm->blob[2].name;
+	sm->config.client_cert = (u8 *)sm->blob[0].name;
+	sm->config.private_key = (u8 *)sm->blob[1].name;
+	sm->config.ca_cert = (u8 *)sm->blob[2].name;
 
 	sm->config.ca_path = NULL;
 
-	sm->config.fragment_size = 1400;	/* fragment size */
+	sm->config.fragment_size = 1400; /* fragment size */
 
 	/* anonymous identity */
 	if (g_wpa_anonymous_identity && g_wpa_anonymous_identity_len > 0) {
-		sm->config.anonymous_identity_len = g_wpa_anonymous_identity_len;
-		sm->config.anonymous_identity = (u8 *) os_zalloc(sm->config.anonymous_identity_len);
-		if (sm->config.anonymous_identity == NULL) {
-			return -2;
-		}
-		os_memcpy(sm->config.anonymous_identity, g_wpa_anonymous_identity, g_wpa_anonymous_identity_len);
+	    sm->config.anonymous_identity_len = g_wpa_anonymous_identity_len;
+	    sm->config.anonymous_identity = (u8 *)os_zalloc(sm->config.anonymous_identity_len);
+	    if (sm->config.anonymous_identity == NULL)
+		    return -2;
+	    os_memcpy(sm->config.anonymous_identity, g_wpa_anonymous_identity, g_wpa_anonymous_identity_len);
 	}
 
 	/* Configre identity */
 	if (g_wpa_username && g_wpa_username_len > 0) {
 		sm->config.identity_len = g_wpa_username_len;
-		sm->config.identity = (u8 *) os_zalloc(sm->config.identity_len);
+		sm->config.identity = (u8 *)os_zalloc(sm->config.identity_len);
 		if (sm->config.identity == NULL) {
 			return -2;
 		}
@@ -388,31 +381,29 @@ int eap_peer_config_init(struct eap_sm *sm, u8 *private_key_passwd, int private_
 
 	if (g_wpa_password && g_wpa_password_len) {
 		sm->config.password_len = g_wpa_password_len;
-		sm->config.password = (u8 *) os_zalloc(sm->config.password_len);
-		if (sm->config.password == NULL) {
+		sm->config.password = (u8 *)os_zalloc(sm->config.password_len);
+		if (sm->config.password == NULL)
 			return -2;
-		}
 		os_memcpy(sm->config.password, g_wpa_password, sm->config.password_len);
 	}
 
 	if (g_wpa_new_password && g_wpa_new_password_len) {
 		sm->config.new_password_len = g_wpa_new_password_len;
-		sm->config.new_password = (u8 *) os_zalloc(sm->config.new_password_len);
-		if (sm->config.new_password == NULL) {
+		sm->config.new_password = (u8 *)os_zalloc(sm->config.new_password_len);
+		if (sm->config.new_password == NULL)
 			return -2;
-		}
-		os_memcpy(sm->config.new_password, g_wpa_new_password, sm->config.new_password_len);
+		os_memcpy(sm->config.new_password, g_wpa_new_password,
+			  sm->config.new_password_len);
 	}
 
 	return 0;
-
+	
 }
 
 void eap_peer_config_deinit(struct eap_sm *sm)
 {
-	if (!sm) {
+	if (!sm)
 		return;
-	}
 
 	os_free(sm->config.anonymous_identity);
 	os_free(sm->config.identity);
@@ -425,12 +416,11 @@ int eap_peer_blob_init(struct eap_sm *sm)
 {
 	int i, ret;
 
-	if (!sm) {
+	if (!sm)
 		return -1;
-	}
 
 	if (g_wpa_client_cert && g_wpa_client_cert_len) {
-		sm->blob[0].name = (char *)os_zalloc(BLOB_NAME_LEN + 1);
+		sm->blob[0].name = (char *)os_zalloc(BLOB_NAME_LEN+1);
 		if (sm->blob[0].name == NULL) {
 			ret = -2;
 			goto _out;
@@ -441,7 +431,7 @@ int eap_peer_blob_init(struct eap_sm *sm)
 	}
 
 	if (g_wpa_private_key && g_wpa_private_key_len) {
-		sm->blob[1].name = (char *)os_zalloc(BLOB_NAME_LEN + 1);
+		sm->blob[1].name = (char *)os_zalloc(BLOB_NAME_LEN+1);
 		if (sm->blob[1].name == NULL) {
 			ret = -2;
 			goto _out;
@@ -452,7 +442,7 @@ int eap_peer_blob_init(struct eap_sm *sm)
 	}
 
 	if (g_wpa_ca_cert && g_wpa_ca_cert_len) {
-		sm->blob[2].name = (char *)os_zalloc(BLOB_NAME_LEN + 1);
+		sm->blob[2].name = (char *)os_zalloc(BLOB_NAME_LEN+1);
 		if (sm->blob[2].name == NULL) {
 			ret = -2;
 			goto _out;
@@ -470,7 +460,7 @@ _out:
 			sm->blob[i].name = NULL;
 		}
 	}
-	os_bzero(&sm->blob[0], sizeof(struct wpa_config_blob) * BLOB_NUM);
+	os_bzero(&sm->blob[0], sizeof(struct wpa_config_blob)*BLOB_NUM);
 
 	return ret;
 }
@@ -484,7 +474,7 @@ void eap_peer_blob_deinit(struct eap_sm *sm)
 			sm->blob[i].name = NULL;
 		}
 	}
-	os_bzero(&sm->blob[0], sizeof(struct wpa_config_blob) * BLOB_NUM);
+	os_bzero(&sm->blob[0], sizeof(struct wpa_config_blob)*BLOB_NUM);
 
 	sm->config.client_cert = NULL;
 	sm->config.private_key = NULL;
@@ -509,73 +499,66 @@ void eap_sm_abort(struct eap_sm *sm)
  * eap_get_config_password(), that do not require direct access to
  * struct eap_peer_config.
  */
-struct eap_peer_config *eap_get_config(struct eap_sm *sm)
+struct eap_peer_config * eap_get_config(struct eap_sm *sm)
 {
 	return &sm->config;
 }
 
-const u8 *eap_get_config_identity(struct eap_sm *sm, size_t *len)
+const u8 * eap_get_config_identity(struct eap_sm *sm, size_t *len)
 {
 	struct eap_peer_config *config = eap_get_config(sm);
-	if (config == NULL) {
+	if (config == NULL)
 		return NULL;
-	}
 	*len = config->identity_len;
 	return config->identity;
 }
 
-const u8 *eap_get_config_password(struct eap_sm *sm, size_t *len)
+const u8 * eap_get_config_password(struct eap_sm *sm, size_t *len)
 {
 	struct eap_peer_config *config = eap_get_config(sm);
-	if (config == NULL) {
+	if (config == NULL)
 		return NULL;
-	}
 	*len = config->password_len;
 	return config->password;
 }
 
-const u8 *eap_get_config_password2(struct eap_sm *sm, size_t *len, int *hash)
+const u8 * eap_get_config_password2(struct eap_sm *sm, size_t *len, int *hash)
 {
 	struct eap_peer_config *config = eap_get_config(sm);
-	if (config == NULL) {
+	if (config == NULL)
 		return NULL;
-	}
 
 	*len = config->password_len;
-	if (hash) {
-		*hash = ! !(config->flags & EAP_CONFIG_FLAGS_PASSWORD_NTHASH);
-	}
+	if (hash)
+		*hash = !!(config->flags & EAP_CONFIG_FLAGS_PASSWORD_NTHASH);
 	return config->password;
 }
 
-const u8 *eap_get_config_new_password(struct eap_sm *sm, size_t *len)
+const u8 * eap_get_config_new_password(struct eap_sm *sm, size_t *len)
 {
 	struct eap_peer_config *config = eap_get_config(sm);
-	if (config == NULL) {
+	if (config == NULL)
 		return NULL;
-	}
 	*len = config->new_password_len;
 	return config->new_password;
 }
-
 /**
  * eap_get_config_blob - Get a named configuration blob
  * @sm: Pointer to EAP state machine allocated with eap_peer_sm_init()
  * @name: Name of the blob
  * Returns: Pointer to blob data or %NULL if not found
  */
-const struct wpa_config_blob *eap_get_config_blob(struct eap_sm *sm, const char *name)
+const struct wpa_config_blob * eap_get_config_blob(struct eap_sm *sm,
+						   const char *name)
 {
 	int i;
 
-	if (!sm) {
+	if (!sm)
 		return NULL;
-	}
 
 	for (i = 0; i < BLOB_NUM; i++) {
-		if (sm->blob[i].name == NULL) {
+		if (sm->blob[i].name == NULL)
 			continue;
-		}
 		if (os_strncmp(name, sm->blob[i].name, BLOB_NAME_LEN) == 0) {
 			return &sm->blob[i];
 		}
@@ -592,7 +575,7 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_cert_key(const unsigned char *client_cert, i
 	if (private_key && private_key_len > 0) {
 		g_wpa_private_key = private_key;
 		g_wpa_private_key_len = private_key_len;
-	}
+	} 
 	if (private_key_passwd && private_key_passwd_len > 0) {
 		g_wpa_private_key_passwd = private_key_passwd;
 		g_wpa_private_key_passwd_len = private_key_passwd_len;
@@ -605,19 +588,19 @@ void esp_wifi_sta_wpa2_ent_clear_cert_key(void)
 {
 	ieee80211_unregister_wpa2_cb();
 
-	g_wpa_client_cert = NULL;
-	g_wpa_client_cert_len = 0;
-	g_wpa_private_key = NULL;
-	g_wpa_private_key_len = 0;
-	g_wpa_private_key_passwd = NULL;
-	g_wpa_private_key_passwd_len = 0;
+    g_wpa_client_cert = NULL;
+    g_wpa_client_cert_len = 0;
+    g_wpa_private_key = NULL;
+    g_wpa_private_key_len = 0;
+    g_wpa_private_key_passwd = NULL;
+    g_wpa_private_key_passwd_len = 0;
 }
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_ca_cert(const unsigned char *ca_cert, int ca_cert_len)
 {
 	if (ca_cert && ca_cert_len > 0) {
 		g_wpa_ca_cert = ca_cert;
-		g_wpa_ca_cert_len = ca_cert_len;
+		g_wpa_ca_cert_len = ca_cert_len;	
 	}
 
 	return ESP_OK;
@@ -641,7 +624,7 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_identity(const unsigned char *identity, int 
 		g_wpa_anonymous_identity = NULL;
 	}
 
-	g_wpa_anonymous_identity = (u8 *) os_zalloc(len);
+	g_wpa_anonymous_identity = (u8 *)os_zalloc(len);
 	if (g_wpa_anonymous_identity == NULL) {
 		return ESP_ERR_NO_MEM;
 	}
@@ -654,9 +637,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_identity(const unsigned char *identity, int 
 
 void esp_wifi_sta_wpa2_ent_clear_identity(void)
 {
-	if (g_wpa_anonymous_identity) {
+	if (g_wpa_anonymous_identity)
 		os_free(g_wpa_anonymous_identity);
-	}
 
 	g_wpa_anonymous_identity = NULL;
 	g_wpa_anonymous_identity_len = 0;
@@ -665,19 +647,17 @@ void esp_wifi_sta_wpa2_ent_clear_identity(void)
 #define USERNAME_LEN_MAX 128
 esp_err_t esp_wifi_sta_wpa2_ent_set_username(const unsigned char *username, int len)
 {
-	if (len <= 0 || len > USERNAME_LEN_MAX) {
+	if (len <= 0 || len > USERNAME_LEN_MAX)
 		return ESP_ERR_INVALID_ARG;
-	}
 
 	if (g_wpa_username) {
 		os_free(g_wpa_username);
 		g_wpa_username = NULL;
 	}
 
-	g_wpa_username = (u8 *) os_zalloc(len);
-	if (g_wpa_username == NULL) {
+	g_wpa_username = (u8 *)os_zalloc(len);
+	if (g_wpa_username == NULL)
 		return ESP_ERR_NO_MEM;
-	}
 
 	os_memcpy(g_wpa_username, username, len);
 	g_wpa_username_len = len;
@@ -687,9 +667,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_username(const unsigned char *username, int 
 
 void esp_wifi_sta_wpa2_ent_clear_username(void)
 {
-	if (g_wpa_username) {
+	if (g_wpa_username)
 		os_free(g_wpa_username);
-	}
 
 	g_wpa_username = NULL;
 	g_wpa_username_len = 0;
@@ -697,19 +676,17 @@ void esp_wifi_sta_wpa2_ent_clear_username(void)
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_password(const unsigned char *password, int len)
 {
-	if (len <= 0) {
+	if (len <= 0)
 		return ESP_ERR_INVALID_ARG;
-	}
 
 	if (g_wpa_password) {
 		os_free(g_wpa_password);
 		g_wpa_password = NULL;
 	}
 
-	g_wpa_password = (u8 *) os_zalloc(len);
-	if (g_wpa_password == NULL) {
+	g_wpa_password = (u8 *)os_zalloc(len);
+	if (g_wpa_password == NULL)
 		return ESP_ERR_NO_MEM;
-	}
 
 	os_memcpy(g_wpa_password, password, len);
 	g_wpa_password_len = len;
@@ -719,28 +696,25 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_password(const unsigned char *password, int 
 
 void esp_wifi_sta_wpa2_ent_clear_password(void)
 {
-	if (g_wpa_password) {
+	if (g_wpa_password)
 		os_free(g_wpa_password);
-	}
 	g_wpa_password = NULL;
 	g_wpa_password_len = 0;
 }
 
 esp_err_t esp_wifi_sta_wpa2_ent_set_new_password(const unsigned char *new_password, int len)
 {
-	if (len <= 0) {
+	if (len <= 0)
 		return ESP_ERR_INVALID_ARG;
-	}
 
 	if (g_wpa_new_password) {
 		os_free(g_wpa_new_password);
 		g_wpa_new_password = NULL;
 	}
 
-	g_wpa_new_password = (u8 *) os_zalloc(len);
-	if (g_wpa_new_password == NULL) {
+	g_wpa_new_password = (u8 *)os_zalloc(len);
+	if (g_wpa_new_password == NULL)
 		return ESP_ERR_NO_MEM;
-	}
 
 	os_memcpy(g_wpa_new_password, new_password, len);
 	g_wpa_password_len = len;
@@ -750,9 +724,8 @@ esp_err_t esp_wifi_sta_wpa2_ent_set_new_password(const unsigned char *new_passwo
 
 void esp_wifi_sta_wpa2_ent_clear_new_password(void)
 {
-	if (g_wpa_new_password) {
+	if (g_wpa_new_password)
 		os_free(g_wpa_new_password);
-	}
 	g_wpa_new_password = NULL;
 	g_wpa_new_password_len = 0;
 }
@@ -773,3 +746,4 @@ esp_err_t esp_wifi_sta_wpa2_ent_get_disable_time_check(bool *disable)
 	*disable = wifi_sta_get_enterprise_disable_time_check();
 	return ESP_OK;
 }
+

@@ -187,6 +187,7 @@
 #define WLAN_REASON_IEEE_802_1X_AUTH_FAILED 23
 #define WLAN_REASON_CIPHER_SUITE_REJECTED 24
 
+
 /* Information Element IDs */
 #define WLAN_EID_SSID 0
 #define WLAN_EID_SUPP_RATES 1
@@ -225,6 +226,7 @@
 #define WLAN_EID_MMIE 76
 #define WLAN_EID_VENDOR_SPECIFIC 221
 
+
 /* Action frame categories (IEEE 802.11-2007, 7.3.1.11, Table 7-24) */
 #define WLAN_ACTION_SPECTRUM_MGMT 0
 #define WLAN_ACTION_QOS 1
@@ -235,7 +237,7 @@
 #define WLAN_ACTION_FT 6
 #define WLAN_ACTION_HT 7
 #define WLAN_ACTION_SA_QUERY 8
-#define WLAN_ACTION_WMM 17		/* WMM Specification 1.1 */
+#define WLAN_ACTION_WMM 17 /* WMM Specification 1.1 */
 
 /* SA Query Action frame (IEEE 802.11w/D8.0, 7.4.9) */
 #define WLAN_SA_QUERY_REQUEST 0
@@ -248,9 +250,10 @@
 #define WLAN_TIMEOUT_KEY_LIFETIME 2
 #define WLAN_TIMEOUT_ASSOC_COMEBACK 3
 
+
 #ifdef _MSC_VER
 #pragma pack(push, 1)
-#endif							/* _MSC_VER */
+#endif /* _MSC_VER */
 
 struct ieee80211_hdr {
 	le16 frame_control;
@@ -341,7 +344,7 @@ struct ieee80211_mgmt {
 					u8 status_code;
 					u8 variable[0];
 				} STRUCT_PACKED wmm_action;
-				struct {
+				struct{
 					u8 action_code;
 					u8 element_id;
 					u8 length;
@@ -353,27 +356,28 @@ struct ieee80211_mgmt {
 					u8 action;
 					u8 sta_addr[ETH_ALEN];
 					u8 target_ap_addr[ETH_ALEN];
-					u8 variable[0];	/* FT Request */
+					u8 variable[0]; /* FT Request */
 				} STRUCT_PACKED ft_action_req;
 				struct {
 					u8 action;
 					u8 sta_addr[ETH_ALEN];
 					u8 target_ap_addr[ETH_ALEN];
 					le16 status_code;
-					u8 variable[0];	/* FT Request */
+					u8 variable[0]; /* FT Request */
 				} STRUCT_PACKED ft_action_resp;
 				struct {
 					u8 action;
 					u8 trans_id[WLAN_SA_QUERY_TR_ID_LEN];
 				} STRUCT_PACKED sa_query_req;
 				struct {
-					u8 action;	/* */
+					u8 action; /* */
 					u8 trans_id[WLAN_SA_QUERY_TR_ID_LEN];
 				} STRUCT_PACKED sa_query_resp;
 			} u;
 		} STRUCT_PACKED action;
 	} u;
 } STRUCT_PACKED;
+
 
 struct ieee80211_ht_capabilities {
 	le16 ht_capabilities_info;
@@ -383,6 +387,7 @@ struct ieee80211_ht_capabilities {
 	le32 tx_bf_capability_info;
 	u8 asel_capabilities;
 } STRUCT_PACKED;
+
 
 struct ieee80211_ht_operation {
 	u8 control_chan;
@@ -394,11 +399,12 @@ struct ieee80211_ht_operation {
 
 #ifdef _MSC_VER
 #pragma pack(pop)
-#endif							/* _MSC_VER */
+#endif /* _MSC_VER */
 
 #define ERP_INFO_NON_ERP_PRESENT BIT(0)
 #define ERP_INFO_USE_PROTECTION BIT(1)
 #define ERP_INFO_BARKER_PREAMBLE_MODE BIT(2)
+
 
 #define HT_CAP_INFO_LDPC_CODING_CAP		((u16) BIT(0))
 #define HT_CAP_INFO_SUPP_CHANNEL_WIDTH_SET	((u16) BIT(1))
@@ -421,11 +427,13 @@ struct ieee80211_ht_operation {
 #define HT_CAP_INFO_40MHZ_INTOLERANT		((u16) BIT(14))
 #define HT_CAP_INFO_LSIG_TXOP_PROTECT_SUPPORT	((u16) BIT(15))
 
+
 #define EXT_HT_CAP_INFO_PCO			((u16) BIT(0))
 #define EXT_HT_CAP_INFO_TRANS_TIME_OFFSET	1
 #define EXT_HT_CAP_INFO_MCS_FEEDBACK_OFFSET	8
 #define EXT_HT_CAP_INFO_HTC_SUPPORTED		((u16) BIT(10))
 #define EXT_HT_CAP_INFO_RD_RESPONDER		((u16) BIT(11))
+
 
 #define TX_BEAMFORM_CAP_TXBF_CAP ((u32) BIT(0))
 #define TX_BEAMFORM_CAP_RX_STAGGERED_SOUNDING_CAP ((u32) BIT(1))
@@ -446,6 +454,7 @@ struct ieee80211_ht_operation {
 #define TX_BEAMFORM_CAP_COMPRESSED_STEERING_MATRIX_BEAMFORMER_ANT_OFFSET 23
 #define TX_BEAMFORM_CAP_SCI_MAX_OF_ROWS_BEANFORMER_SUPPORTED_OFFSET 25
 
+
 #define ASEL_CAPABILITY_ASEL_CAPABLE ((u8) BIT(0))
 #define ASEL_CAPABILITY_EXPLICIT_CSI_FEEDBACK_BASED_TX_AS_CAP ((u8) BIT(1))
 #define ASEL_CAPABILITY_ANT_INDICES_FEEDBACK_BASED_TX_AS_CAP ((u8) BIT(2))
@@ -461,6 +470,7 @@ struct ieee80211_ht_operation {
 #define HT_INFO_HT_PARAM_RIFS_MODE			((u8) BIT(3))
 #define HT_INFO_HT_PARAM_CTRL_ACCESS_ONLY		((u8) BIT(4))
 #define HT_INFO_HT_PARAM_SRV_INTERVAL_GRANULARITY	((u8) BIT(5))
+
 
 #define OP_MODE_PURE                    0
 #define OP_MODE_MAY_BE_LEGACY_STAS      1
@@ -481,8 +491,9 @@ struct ieee80211_ht_operation {
 #define HT_INFO_STBC_PARAM_PCO_ACTIVE			((u16) BIT(10))
 #define HT_INFO_STBC_PARAM_PCO_PHASE			((u16) BIT(11))
 
-#define OUI_MICROSOFT 0x0050f2	/* Microsoft (also used in Wi-Fi specs)
-								 * 00:50:F2 */
+
+#define OUI_MICROSOFT 0x0050f2 /* Microsoft (also used in Wi-Fi specs)
+				* 00:50:F2 */
 #define WPA_IE_VENDOR_TYPE 0x0050f201
 #define WPS_IE_VENDOR_TYPE 0x0050f204
 
@@ -515,11 +526,11 @@ struct ieee80211_ht_operation {
 struct wmm_information_element {
 	/* Element ID: 221 (0xdd); Length: 7 */
 	/* required fields for WMM version 1 */
-	u8 oui[3];					/* 00:50:f2 */
-	u8 oui_type;				/* 2 */
-	u8 oui_subtype;				/* 0 */
-	u8 version;					/* 1 for WMM version 1.0 */
-	u8 qos_info;				/* AP/STA specific QoS info */
+	u8 oui[3]; /* 00:50:f2 */
+	u8 oui_type; /* 2 */
+	u8 oui_subtype; /* 0 */
+	u8 version; /* 1 for WMM version 1.0 */
+	u8 qos_info; /* AP/STA specific QoS info */
 
 } STRUCT_PACKED;
 
@@ -535,10 +546,10 @@ struct wmm_information_element {
 #define WMM_AC_ECWMAX_SHIFT 4
 
 struct wmm_ac_parameter {
-	u8 aci_aifsn;				/* AIFSN, ACM, ACI */
-	u8 cw;						/* ECWmin, ECWmax (CW = 2^ECW - 1) */
+	u8 aci_aifsn; /* AIFSN, ACM, ACI */
+	u8 cw; /* ECWmin, ECWmax (CW = 2^ECW - 1) */
 	le16 txop_limit;
-} STRUCT_PACKED;
+}  STRUCT_PACKED;
 
 /*
  * WMM Parameter Element (used in Beacon, Probe Response, and (Re)Association
@@ -547,24 +558,24 @@ struct wmm_ac_parameter {
 struct wmm_parameter_element {
 	/* Element ID: 221 (0xdd); Length: 24 */
 	/* required fields for WMM version 1 */
-	u8 oui[3];					/* 00:50:f2 */
-	u8 oui_type;				/* 2 */
-	u8 oui_subtype;				/* 1 */
-	u8 version;					/* 1 for WMM version 1.0 */
-	u8 qos_info;				/* AP/STA specif QoS info */
-	u8 reserved;				/* 0 */
-	struct wmm_ac_parameter ac[4];	/* AC_BE, AC_BK, AC_VI, AC_VO */
+	u8 oui[3]; /* 00:50:f2 */
+	u8 oui_type; /* 2 */
+	u8 oui_subtype; /* 1 */
+	u8 version; /* 1 for WMM version 1.0 */
+	u8 qos_info; /* AP/STA specif QoS info */
+	u8 reserved; /* 0 */
+	struct wmm_ac_parameter ac[4]; /* AC_BE, AC_BK, AC_VI, AC_VO */
 
 } STRUCT_PACKED;
 
 /* WMM TSPEC Element */
 struct wmm_tspec_element {
-	u8 eid;						/* 221 = 0xdd */
-	u8 length;					/* 6 + 55 = 61 */
-	u8 oui[3];					/* 00:50:f2 */
-	u8 oui_type;				/* 2 */
-	u8 oui_subtype;				/* 2 */
-	u8 version;					/* 1 */
+	u8 eid; /* 221 = 0xdd */
+	u8 length; /* 6 + 55 = 61 */
+	u8 oui[3]; /* 00:50:f2 */
+	u8 oui_type; /* 2 */
+	u8 oui_subtype; /* 2 */
+	u8 version; /* 1 */
 	/* WMM TSPEC body (55 octets): */
 	u8 ts_info[3];
 	le16 nominal_msdu_size;
@@ -584,17 +595,19 @@ struct wmm_tspec_element {
 	le16 medium_time;
 } STRUCT_PACKED;
 
+
 /* Access Categories / ACI to AC coding */
 enum {
-	WMM_AC_BE = 0 /* Best Effort */ ,
-	WMM_AC_BK = 1 /* Background */ ,
-	WMM_AC_VI = 2 /* Video */ ,
-	WMM_AC_VO = 3				/* Voice */
+	WMM_AC_BE = 0 /* Best Effort */,
+	WMM_AC_BK = 1 /* Background */,
+	WMM_AC_VI = 2 /* Video */,
+	WMM_AC_VO = 3 /* Voice */
 };
 
-#define OUI_BROADCOM 0x00904c	/* Broadcom (Epigram) */
 
-#define VENDOR_HT_CAPAB_OUI_TYPE 0x33	/* 00-90-4c:0x33 */
+#define OUI_BROADCOM 0x00904c /* Broadcom (Epigram) */
+
+#define VENDOR_HT_CAPAB_OUI_TYPE 0x33 /* 00-90-4c:0x33 */
 
 /* cipher suite selectors */
 #define WLAN_CIPHER_SUITE_USE_GROUP	0x000FAC00
@@ -609,4 +622,4 @@ enum {
 #define WLAN_AKM_SUITE_8021X		0x000FAC01
 #define WLAN_AKM_SUITE_PSK		0x000FAC02
 
-#endif							/* IEEE802_11_DEFS_H */
+#endif /* IEEE802_11_DEFS_H */

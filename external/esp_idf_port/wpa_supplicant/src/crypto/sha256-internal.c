@@ -45,8 +45,10 @@ struct sha256_state {
 };
 
 static void sha256_init(struct sha256_state *md);
-static int sha256_process(struct sha256_state *md, const unsigned char *in, unsigned long inlen);
+static int sha256_process(struct sha256_state *md, const unsigned char *in,
+			  unsigned long inlen);
 static int sha256_done(struct sha256_state *md, unsigned char *out);
+
 
 /**
  * sha256_vector - SHA256 hash for data vector
@@ -56,21 +58,22 @@ static int sha256_done(struct sha256_state *md, unsigned char *out);
  * @mac: Buffer for the hash
  * Returns: 0 on success, -1 of failure
  */
-int sha256_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
+int 
+sha256_vector(size_t num_elem, const u8 *addr[], const size_t *len,
+		  u8 *mac)
 {
 	struct sha256_state ctx;
 	size_t i;
 
 	sha256_init(&ctx);
 	for (i = 0; i < num_elem; i++)
-		if (sha256_process(&ctx, addr[i], len[i])) {
+		if (sha256_process(&ctx, addr[i], len[i]))
 			return -1;
-		}
-	if (sha256_done(&ctx, mac)) {
+	if (sha256_done(&ctx, mac))
 		return -1;
-	}
 	return 0;
 }
+
 
 /* ===== start - public domain SHA256 implementation ===== */
 
@@ -94,12 +97,13 @@ static const unsigned long K[64] = {
 	0x90befffaUL, 0xa4506cebUL, 0xbef9a3f7UL, 0xc67178f2UL
 };
 
+
 /* Various logical functions */
 #define RORc(x, y) \
 ( ((((unsigned long) (x) & 0xFFFFFFFFUL) >> (unsigned long) ((y) & 31)) | \
    ((unsigned long) (x) << (unsigned long) (32 - ((y) & 31)))) & 0xFFFFFFFFUL)
 #define Ch(x,y,z)       (z ^ (x & (y ^ z)))
-#define Maj(x,y,z)      (((x | y) & z) | (x & y))
+#define Maj(x,y,z)      (((x | y) & z) | (x & y)) 
 #define S(x, n)         RORc((x), (n))
 #define R(x, n)         (((x)&0xFFFFFFFFUL)>>(n))
 #define Sigma0(x)       (S(x, 2) ^ S(x, 13) ^ S(x, 22))
@@ -111,7 +115,8 @@ static const unsigned long K[64] = {
 #endif
 
 /* compress 512-bits */
-static int sha256_compress(struct sha256_state *md, unsigned char *buf)
+static int 
+sha256_compress(struct sha256_state *md, unsigned char *buf)
 {
 	u32 S[8], W[64], t0, t1;
 	u32 t;
@@ -123,14 +128,14 @@ static int sha256_compress(struct sha256_state *md, unsigned char *buf)
 	}
 
 	/* copy the state into 512-bits into W[0..15] */
-	for (i = 0; i < 16; i++) {
+	for (i = 0; i < 16; i++)
 		W[i] = WPA_GET_BE32(buf + (4 * i));
-	}
 
 	/* fill W[16..63] */
 	for (i = 16; i < 64; i++) {
-		W[i] = Gamma1(W[i - 2]) + W[i - 7] + Gamma0(W[i - 15]) + W[i - 16];
-	}
+		W[i] = Gamma1(W[i - 2]) + W[i - 7] + Gamma0(W[i - 15]) +
+			W[i - 16];
+	}        
 
 	/* Compress */
 #define RND(a,b,c,d,e,f,g,h,i)                          \
@@ -141,15 +146,8 @@ static int sha256_compress(struct sha256_state *md, unsigned char *buf)
 
 	for (i = 0; i < 64; ++i) {
 		RND(S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7], i);
-		t = S[7];
-		S[7] = S[6];
-		S[6] = S[5];
-		S[5] = S[4];
-		S[4] = S[3];
-		S[3] = S[2];
-		S[2] = S[1];
-		S[1] = S[0];
-		S[0] = t;
+		t = S[7]; S[7] = S[6]; S[6] = S[5]; S[5] = S[4]; 
+		S[4] = S[3]; S[3] = S[2]; S[2] = S[1]; S[1] = S[0]; S[0] = t;
 	}
 
 	/* feedback */
@@ -159,8 +157,10 @@ static int sha256_compress(struct sha256_state *md, unsigned char *buf)
 	return 0;
 }
 
+
 /* Initialize the hash state */
-static void sha256_init(struct sha256_state *md)
+static void 
+sha256_init(struct sha256_state *md)
 {
 	md->curlen = 0;
 	md->length = 0;
@@ -181,19 +181,19 @@ static void sha256_init(struct sha256_state *md)
    @param inlen  The length of the data (octets)
    @return CRYPT_OK if successful
 */
-static int sha256_process(struct sha256_state *md, const unsigned char *in, unsigned long inlen)
+static int 
+sha256_process(struct sha256_state *md, const unsigned char *in,
+			  unsigned long inlen)
 {
 	unsigned long n;
 
-	if (md->curlen >= sizeof(md->buf)) {
+	if (md->curlen >= sizeof(md->buf))
 		return -1;
-	}
 
 	while (inlen > 0) {
 		if (md->curlen == 0 && inlen >= SHA256_BLOCK_SIZE) {
-			if (sha256_compress(md, (unsigned char *)in) < 0) {
+			if (sha256_compress(md, (unsigned char *) in) < 0)
 				return -1;
-			}
 			md->length += SHA256_BLOCK_SIZE * 8;
 			in += SHA256_BLOCK_SIZE;
 			inlen -= SHA256_BLOCK_SIZE;
@@ -204,9 +204,8 @@ static int sha256_process(struct sha256_state *md, const unsigned char *in, unsi
 			in += n;
 			inlen -= n;
 			if (md->curlen == SHA256_BLOCK_SIZE) {
-				if (sha256_compress(md, md->buf) < 0) {
+				if (sha256_compress(md, md->buf) < 0)
 					return -1;
-				}
 				md->length += 8 * SHA256_BLOCK_SIZE;
 				md->curlen = 0;
 			}
@@ -216,25 +215,26 @@ static int sha256_process(struct sha256_state *md, const unsigned char *in, unsi
 	return 0;
 }
 
+
 /**
    Terminate the hash to get the digest
    @param md  The hash state
    @param out [out] The destination of the hash (32 bytes)
    @return CRYPT_OK if successful
 */
-static int sha256_done(struct sha256_state *md, unsigned char *out)
+static int 
+sha256_done(struct sha256_state *md, unsigned char *out)
 {
 	int i;
 
-	if (md->curlen >= sizeof(md->buf)) {
+	if (md->curlen >= sizeof(md->buf))
 		return -1;
-	}
 
 	/* increase the length of the message */
 	md->length += md->curlen * 8;
 
 	/* append the '1' bit */
-	md->buf[md->curlen++] = (unsigned char)0x80;
+	md->buf[md->curlen++] = (unsigned char) 0x80;
 
 	/* if the length is currently above 56 bytes we append zeros
 	 * then compress.  Then we can fall back to padding zeros and length
@@ -242,7 +242,7 @@ static int sha256_done(struct sha256_state *md, unsigned char *out)
 	 */
 	if (md->curlen > 56) {
 		while (md->curlen < SHA256_BLOCK_SIZE) {
-			md->buf[md->curlen++] = (unsigned char)0;
+			md->buf[md->curlen++] = (unsigned char) 0;
 		}
 		sha256_compress(md, md->buf);
 		md->curlen = 0;
@@ -250,7 +250,7 @@ static int sha256_done(struct sha256_state *md, unsigned char *out)
 
 	/* pad up to 56 bytes of zeroes */
 	while (md->curlen < 56) {
-		md->buf[md->curlen++] = (unsigned char)0;
+		md->buf[md->curlen++] = (unsigned char) 0;
 	}
 
 	/* store length */
@@ -258,9 +258,8 @@ static int sha256_done(struct sha256_state *md, unsigned char *out)
 	sha256_compress(md, md->buf);
 
 	/* copy output */
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < 8; i++)
 		WPA_PUT_BE32(out + (4 * i), md->state[i]);
-	}
 
 	return 0;
 }

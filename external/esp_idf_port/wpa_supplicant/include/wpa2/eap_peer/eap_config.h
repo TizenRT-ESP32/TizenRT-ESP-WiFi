@@ -179,6 +179,7 @@ struct eap_peer_config {
 	 */
 	struct eap_method_type *eap_methods;
 
+
 	char *phase1;
 
 	char *phase2;
@@ -233,6 +234,7 @@ struct eap_peer_config {
 	int ocsp;
 };
 
+
 /**
  * struct wpa_config_blob - Named configuration blob
  *
@@ -262,4 +264,4 @@ struct wpa_config_blob {
 	struct wpa_config_blob *next;
 };
 
-#endif							/* EAP_CONFIG_H */
+#endif /* EAP_CONFIG_H */

@@ -42,36 +42,39 @@
  * @mac: Buffer for the hash
  * Returns: 0 on success, -1 of failure
  */
-int fast_sha256_vector(size_t num_elem, const uint8_t *addr[], const size_t *len, uint8_t *mac)
+int 
+fast_sha256_vector(size_t num_elem, const uint8_t *addr[], const size_t *len,
+		  uint8_t *mac)
 {
 
-	int ret = 0;
-	/*if enable, there are link error, but i do not know why esp no this error*/
-#if 0
-	mbedtls_sha256_context ctx;
+    int ret = 0;
+/*if enable, there are link error, but i do not know why esp no this error*/
+#if 0    
+    mbedtls_sha256_context ctx;
 
-	mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_init(&ctx);
 
-	if (mbedtls_sha256_starts_ret(&ctx, 0) != 0) {
-		ret = -1;
-		goto out;
-	}
+    if (mbedtls_sha256_starts_ret(&ctx, 0) != 0) {
+        ret = -1;
+        goto out;
+    }
 
-	for (size_t index = 0; index < num_elem; index++) {
-		if (mbedtls_sha256_update_ret(&ctx, addr[index], len[index]) != 0) {
-			ret = -1;
-			goto out;
-		}
-	}
+    for(size_t index = 0; index < num_elem; index++) {
+        if (mbedtls_sha256_update_ret(&ctx, addr[index], len[index]) != 0) {
+            ret = -1;
+            goto out;
+        }
+    }
 
-	if (mbedtls_sha256_finish_ret(&ctx, mac) != 0) {
-		ret = -1;
-		goto out;
-	}
+    if (mbedtls_sha256_finish_ret(&ctx, mac) != 0) {
+        ret = -1;
+        goto out;
+    }
 
 out:
-	mbedtls_sha256_free(&ctx);
+    mbedtls_sha256_free(&ctx);
 
 #endif
-	return ret;
+    return ret;
 }
+

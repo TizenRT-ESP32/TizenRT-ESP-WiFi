@@ -40,7 +40,7 @@
  * @cipher: Wrapped key, (n + 1) * 64 bits
  * Returns: 0 on success, -1 on failure
  */
-int aes_wrap(const u8 *kek, int n, const u8 *plain, u8 *cipher)
+int  aes_wrap(const u8 *kek, int n, const u8 *plain, u8 *cipher)
 {
 	u8 *a, *r, b[16];
 	int i, j;
@@ -54,9 +54,8 @@ int aes_wrap(const u8 *kek, int n, const u8 *plain, u8 *cipher)
 	os_memcpy(r, plain, 8 * n);
 
 	ctx = aes_encrypt_init(kek, 16);
-	if (ctx == NULL) {
+	if (ctx == NULL)
 		return -1;
-	}
 
 	/* 2) Calculate intermediate values.
 	 * For j = 0 to 5

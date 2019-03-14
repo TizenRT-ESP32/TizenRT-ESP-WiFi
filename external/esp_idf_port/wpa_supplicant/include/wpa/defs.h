@@ -49,7 +49,7 @@ typedef enum { FALSE = 0, TRUE = 1 } Boolean;
 #define WPA_CIPHER_CCMP BIT(4)
 #ifdef CONFIG_IEEE80211W
 #define WPA_CIPHER_AES_128_CMAC BIT(5)
-#endif
+#endif 
 */
 
 /*
@@ -68,6 +68,7 @@ typedef enum { FALSE = 0, TRUE = 1 } Boolean;
 #define	IEEE80211_CIPHER_WEP		6
 #define	IEEE80211_CIPHER_WEP40		7
 #define	IEEE80211_CIPHER_WEP104		8
+
 
 #define	IEEE80211_CIPHER_MAX		(IEEE80211_CIPHER_NONE+2)
 
@@ -89,7 +90,7 @@ typedef enum { FALSE = 0, TRUE = 1 } Boolean;
 #define WPA_CIPHER_CCMP                     IEEE80211_CRYPTO_AES_CCM
 #ifdef CONFIG_IEEE80211W
 #define WPA_CIPHER_AES_128_CMAC    IEEE80211_CRYPTO_AES_OCB
-#endif							/* CONFIG_IEEE80211W */
+#endif /* CONFIG_IEEE80211W */
 #define WPA_CIPHER_GCMP BIT(6)
 
 #define WPA_KEY_MGMT_IEEE8021X BIT(0)
@@ -106,23 +107,31 @@ typedef enum { FALSE = 0, TRUE = 1 } Boolean;
 
 static inline int wpa_key_mgmt_wpa_ieee8021x(int akm)
 {
-	return ! !(akm & (WPA_KEY_MGMT_IEEE8021X | WPA_KEY_MGMT_FT_IEEE8021X | WPA_KEY_MGMT_CCKM | WPA_KEY_MGMT_IEEE8021X_SHA256));
+	return !!(akm & (WPA_KEY_MGMT_IEEE8021X |
+			 WPA_KEY_MGMT_FT_IEEE8021X |
+			 WPA_KEY_MGMT_CCKM |
+			 WPA_KEY_MGMT_IEEE8021X_SHA256));
 }
 
 static inline int wpa_key_mgmt_wpa_psk(int akm)
 {
-	return akm == WPA_KEY_MGMT_PSK || akm == WPA_KEY_MGMT_FT_PSK || akm == WPA_KEY_MGMT_PSK_SHA256;
+	return akm == WPA_KEY_MGMT_PSK ||
+		akm == WPA_KEY_MGMT_FT_PSK ||
+		akm == WPA_KEY_MGMT_PSK_SHA256;
 }
 
 static inline int wpa_key_mgmt_ft(int akm)
 {
-	return akm == WPA_KEY_MGMT_FT_PSK || akm == WPA_KEY_MGMT_FT_IEEE8021X;
+	return akm == WPA_KEY_MGMT_FT_PSK ||
+		akm == WPA_KEY_MGMT_FT_IEEE8021X;
 }
 
 static inline int wpa_key_mgmt_sha256(int akm)
 {
-	return akm == WPA_KEY_MGMT_PSK_SHA256 || akm == WPA_KEY_MGMT_IEEE8021X_SHA256;
+	return akm == WPA_KEY_MGMT_PSK_SHA256 ||
+		akm == WPA_KEY_MGMT_IEEE8021X_SHA256;
 }
+
 
 #define WPA_PROTO_WPA BIT(0)
 #define WPA_PROTO_RSN BIT(1)
@@ -132,6 +141,7 @@ static inline int wpa_key_mgmt_sha256(int akm)
 #define WPA_AUTH_ALG_LEAP BIT(2)
 #define WPA_AUTH_ALG_FT BIT(3)
 
+
 enum ieee80211_key_alg {
 	ALG_WEP,
 	ALG_TKIP,
@@ -140,7 +150,7 @@ enum ieee80211_key_alg {
 };
 
 enum wpa_alg {
-	WPA_ALG_NONE = 0,
+	WPA_ALG_NONE =0,
 	WPA_ALG_WEP40 = 1,
 	WPA_ALG_TKIP = 2,
 	WPA_ALG_CCMP = 3,
@@ -288,9 +298,9 @@ enum wpa_states {
 	 */
 	WPA_COMPLETED,
 
-	WPA_MIC_FAILURE,			// first mic_error event occur
+	WPA_MIC_FAILURE,                         // first mic_error event occur
 
-	WPA_TKIP_COUNTERMEASURES	//in countermeasure period that stop connect with ap in 60 sec
+	WPA_TKIP_COUNTERMEASURES  //in countermeasure period that stop connect with ap in 60 sec
 };
 
 #define MLME_SETPROTECTION_PROTECT_TYPE_NONE 0
@@ -312,4 +322,4 @@ enum hostapd_hw_mode {
 	NUM_HOSTAPD_MODES
 };
 
-#endif							/* DEFS_H */
+#endif /* DEFS_H */

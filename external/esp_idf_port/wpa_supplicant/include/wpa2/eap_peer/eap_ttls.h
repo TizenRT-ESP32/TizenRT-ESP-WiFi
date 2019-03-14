@@ -28,25 +28,18 @@
 #define EAP_TTLS_H
 
 struct ttls_avp {
-
 	be32 avp_code;
-
-	be32 avp_length;			/* 8-bit flags, 24-bit length;
-								 * length includes AVP header */
-
+	be32 avp_length; /* 8-bit flags, 24-bit length;
+			  * length includes AVP header */
 	/* optional 32-bit Vendor-ID */
 	/* Data */
 };
 
 struct ttls_avp_vendor {
-
 	be32 avp_code;
-
-	be32 avp_length;			/* 8-bit flags, 24-bit length;
-								 * length includes AVP header */
-
+	be32 avp_length; /* 8-bit flags, 24-bit length;
+			  * length includes AVP header */
 	be32 vendor_id;
-
 	/* Data */
 };
 
@@ -54,20 +47,15 @@ struct ttls_avp_vendor {
 #define AVP_FLAGS_MANDATORY 0x40
 
 #define AVP_PAD(start, pos) \
-	do {
-\
-int __pad;
-\
-__pad = (4 - (((pos) - (start)) & 3)) & 3;
-\
-os_memset((pos), 0, __pad);
-\
-pos += __pad;
-\
+do { \
+	int __pad; \
+	__pad = (4 - (((pos) - (start)) & 3)) & 3; \
+	os_memset((pos), 0, __pad); \
+	pos += __pad; \
 } while (0)
 
 
-	/* RFC 2865 */
+/* RFC 2865 */
 #define RADIUS_ATTR_USER_NAME 1
 #define RADIUS_ATTR_USER_PASSWORD 2
 #define RADIUS_ATTR_CHAP_PASSWORD 3
@@ -75,7 +63,7 @@ pos += __pad;
 #define RADIUS_ATTR_CHAP_CHALLENGE 60
 #define RADIUS_ATTR_EAP_MESSAGE 79
 
-	/* RFC 2548 */
+/* RFC 2548 */
 #define RADIUS_VENDOR_ID_MICROSOFT 311
 #define RADIUS_ATTR_MS_CHAP_RESPONSE 1
 #define RADIUS_ATTR_MS_CHAP_ERROR 2
@@ -92,4 +80,4 @@ pos += __pad;
 #define EAP_TTLS_CHAP_CHALLENGE_LEN 16
 #define EAP_TTLS_CHAP_PASSWORD_LEN 16
 
-#endif	/* EAP_TTLS_H */
+#endif /* EAP_TTLS_H */
