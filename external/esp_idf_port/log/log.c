@@ -54,7 +54,6 @@
  */
 
 #ifndef BOOTLOADER_BUILD
-#include <semaphore/semaphore.h>
 #include <pthread.h>
 #endif
 

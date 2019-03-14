@@ -84,7 +84,7 @@ struct eap_method {
 	/**
 	 * method - EAP type number
 	 */
-	EapType method;
+	EapType method;	
 
 	/**
 	 * name - Name of the method (e.g., "TLS")
@@ -93,18 +93,21 @@ struct eap_method {
 
 	struct eap_method *next;
 
-	void *(*init)(struct eap_sm *sm);
+	void * (*init)(struct eap_sm *sm);
 	void (*deinit)(struct eap_sm *sm, void *priv);
-	struct wpabuf *(*process)(struct eap_sm *sm, void *priv, struct eap_method_ret *ret, const struct wpabuf *reqData);
-	bool(*isKeyAvailable)(struct eap_sm *sm, void *priv);
-	u8 *(*getKey)(struct eap_sm *sm, void *priv, size_t *len);
-	int (*get_status)(struct eap_sm *sm, void *priv, char *buf, size_t buflen, int verbose);
-	const u8 *(*get_identity)(struct eap_sm *sm, void *priv, size_t *len);
+	struct wpabuf * (*process)(struct eap_sm *sm, void *priv,
+				   struct eap_method_ret *ret,
+				   const struct wpabuf *reqData);
+	bool (*isKeyAvailable)(struct eap_sm *sm, void *priv);
+	u8 * (*getKey)(struct eap_sm *sm, void *priv, size_t *len);
+	int (*get_status)(struct eap_sm *sm, void *priv, char *buf,
+			  size_t buflen, int verbose);
+	const u8 * (*get_identity)(struct eap_sm *sm, void *priv, size_t *len);
 	void (*free)(struct eap_method *method);
-	bool(*has_reauth_data)(struct eap_sm *sm, void *priv);
+	bool (*has_reauth_data)(struct eap_sm *sm, void *priv);
 	void (*deinit_for_reauth)(struct eap_sm *sm, void *priv);
-	void *(*init_for_reauth)(struct eap_sm *sm, void *priv);
-	u8 *(*getSessionId)(struct eap_sm *sm, void *priv, size_t *len);
+	void * (*init_for_reauth)(struct eap_sm *sm, void *priv);
+	u8 * (*getSessionId)(struct eap_sm *sm, void *priv, size_t *len);
 };
 
 #define CLIENT_CERT_NAME	"CLC"
@@ -123,14 +126,14 @@ struct eap_sm {
 
 	unsigned int workaround;
 /////////////////////////////////////////////////
-	struct pbuf *outbuf;
+        struct pbuf *outbuf;
 	struct wpa_config_blob blob[BLOB_NUM];
 	struct eap_peer_config config;
 	u8 current_identifier;
 	u8 ownaddr[ETH_ALEN];
 #ifdef USE_WPA2_TASK
 #define SIG_WPA2_NUM 2
-	u8 wpa2_sig_cnt[SIG_WPA2_NUM];
+    	u8 wpa2_sig_cnt[SIG_WPA2_NUM];
 #endif
 	u8 finish_state;
 
@@ -145,14 +148,14 @@ struct eap_sm {
 
 wpa2_crypto_funcs_t wpa2_crypto_funcs;
 
-const u8 *eap_get_config_identity(struct eap_sm *sm, size_t *len);
-const u8 *eap_get_config_password(struct eap_sm *sm, size_t *len);
-const u8 *eap_get_config_password2(struct eap_sm *sm, size_t *len, int *hash);
-const u8 *eap_get_config_new_password(struct eap_sm *sm, size_t *len);
-struct eap_peer_config *eap_get_config(struct eap_sm *sm);
-const struct wpa_config_blob *eap_get_config_blob(struct eap_sm *sm, const char *name);
+const u8 * eap_get_config_identity(struct eap_sm *sm, size_t *len);
+const u8 * eap_get_config_password(struct eap_sm *sm, size_t *len);
+const u8 * eap_get_config_password2(struct eap_sm *sm, size_t *len, int *hash);
+const u8 * eap_get_config_new_password(struct eap_sm *sm, size_t *len);
+struct eap_peer_config * eap_get_config(struct eap_sm *sm);
+const struct wpa_config_blob * eap_get_config_blob(struct eap_sm *sm, const char *name);
 bool wifi_sta_get_enterprise_disable_time_check(void);
 
-struct wpabuf *eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypted);
+struct wpabuf * eap_sm_build_identity_resp(struct eap_sm *sm, u8 id, int encrypted);
 
-#endif							/* EAP_I_H */
+#endif /* EAP_I_H */

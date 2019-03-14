@@ -18,7 +18,7 @@
 
 /*
  * MD4 hash implementation
- *
+ * 
  * This software may be distributed under the terms of BSD license.
  */
 
@@ -45,9 +45,8 @@ int md4_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *mac)
 	size_t i;
 
 	MD4Init(&ctx);
-	for (i = 0; i < num_elem; i++) {
+	for (i = 0; i < num_elem; i++)
 		MD4Update(&ctx, addr[i], len[i]);
-	}
 	MD4Final(mac, &ctx);
 	return 0;
 }
@@ -74,9 +73,9 @@ static void MD4Transform(u32 state[4], const u8 block[MD4_BLOCK_LENGTH]);
 
 static u8 PADDING[MD4_BLOCK_LENGTH] = {
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 static void MD4Init(MD4_CTX *ctx)
@@ -95,7 +94,7 @@ static void MD4Update(MD4_CTX *ctx, const unsigned char *input, size_t len)
 	have = (size_t)((ctx->count >> 3) & (MD4_BLOCK_LENGTH - 1));
 	need = MD4_BLOCK_LENGTH - have;
 
-	ctx->count += (u64) len << 3;
+	ctx->count += (u64)len << 3;
 
 	if (len >= need) {
 		if (have != 0) {
@@ -113,9 +112,8 @@ static void MD4Update(MD4_CTX *ctx, const unsigned char *input, size_t len)
 		}
 	}
 
-	if (len != 0) {
+	if (len != 0)
 		os_memcpy(ctx->buffer + have, input, len);
-	}
 }
 
 static void MD4Pad(MD4_CTX *ctx)
@@ -125,10 +123,10 @@ static void MD4Pad(MD4_CTX *ctx)
 
 	PUT_64BIT_LE(count, ctx->count);
 
-	padlen = MD4_BLOCK_LENGTH - ((ctx->count >> 3) & (MD4_BLOCK_LENGTH - 1));
-	if (padlen < 1 + 8) {
+	padlen = MD4_BLOCK_LENGTH -
+		((ctx->count >> 3) & (MD4_BLOCK_LENGTH - 1));
+	if (padlen < 1 + 8)
 		padlen += MD4_BLOCK_LENGTH;
-	}
 	MD4Update(ctx, PADDING, padlen - 8);
 	MD4Update(ctx, count, 8);
 }
@@ -139,9 +137,8 @@ static void MD4Final(unsigned char digest[MD4_DIGEST_LENGTH], MD4_CTX *ctx)
 
 	MD4Pad(ctx);
 	if (digest != NULL) {
-		for (i = 0; i < 4; i++) {
+		for (i = 0; i < 4; i ++)
 			PUT_32BIT_LE(digest + i * 4, ctx->state[i]);
-		}
 		os_memset(ctx, 0, sizeof(*ctx));
 	}
 }
@@ -164,16 +161,16 @@ static void MD4Transform(u32 state[4], const u8 block[MD4_BLOCK_LENGTH])
 	c = state[2];
 	d = state[3];
 
-	MD4SETP(F1, a, b, c, d, in[0], 3);
-	MD4SETP(F1, d, a, b, c, in[1], 7);
-	MD4SETP(F1, c, d, a, b, in[2], 11);
-	MD4SETP(F1, b, c, d, a, in[3], 19);
-	MD4SETP(F1, a, b, c, d, in[4], 3);
-	MD4SETP(F1, d, a, b, c, in[5], 7);
-	MD4SETP(F1, c, d, a, b, in[6], 11);
-	MD4SETP(F1, b, c, d, a, in[7], 19);
-	MD4SETP(F1, a, b, c, d, in[8], 3);
-	MD4SETP(F1, d, a, b, c, in[9], 7);
+	MD4SETP(F1, a, b, c, d, in[ 0], 3);
+	MD4SETP(F1, d, a, b, c, in[ 1], 7);
+	MD4SETP(F1, c, d, a, b, in[ 2], 11);
+	MD4SETP(F1, b, c, d, a, in[ 3], 19);
+	MD4SETP(F1, a, b, c, d, in[ 4], 3);
+	MD4SETP(F1, d, a, b, c, in[ 5], 7);
+	MD4SETP(F1, c, d, a, b, in[ 6], 11);
+	MD4SETP(F1, b, c, d, a, in[ 7], 19);
+	MD4SETP(F1, a, b, c, d, in[ 8], 3);
+	MD4SETP(F1, d, a, b, c, in[ 9], 7);
 	MD4SETP(F1, c, d, a, b, in[10], 11);
 	MD4SETP(F1, b, c, d, a, in[11], 19);
 	MD4SETP(F1, a, b, c, d, in[12], 3);
@@ -181,38 +178,38 @@ static void MD4Transform(u32 state[4], const u8 block[MD4_BLOCK_LENGTH])
 	MD4SETP(F1, c, d, a, b, in[14], 11);
 	MD4SETP(F1, b, c, d, a, in[15], 19);
 
-	MD4SETP(F2, a, b, c, d, in[0] + 0x5a827999, 3);
-	MD4SETP(F2, d, a, b, c, in[4] + 0x5a827999, 5);
-	MD4SETP(F2, c, d, a, b, in[8] + 0x5a827999, 9);
+	MD4SETP(F2, a, b, c, d, in[ 0] + 0x5a827999, 3);
+	MD4SETP(F2, d, a, b, c, in[ 4] + 0x5a827999, 5);
+	MD4SETP(F2, c, d, a, b, in[ 8] + 0x5a827999, 9);
 	MD4SETP(F2, b, c, d, a, in[12] + 0x5a827999, 13);
-	MD4SETP(F2, a, b, c, d, in[1] + 0x5a827999, 3);
-	MD4SETP(F2, d, a, b, c, in[5] + 0x5a827999, 5);
-	MD4SETP(F2, c, d, a, b, in[9] + 0x5a827999, 9);
+	MD4SETP(F2, a, b, c, d, in[ 1] + 0x5a827999, 3);
+	MD4SETP(F2, d, a, b, c, in[ 5] + 0x5a827999, 5);
+	MD4SETP(F2, c, d, a, b, in[ 9] + 0x5a827999, 9);
 	MD4SETP(F2, b, c, d, a, in[13] + 0x5a827999, 13);
-	MD4SETP(F2, a, b, c, d, in[2] + 0x5a827999, 3);
-	MD4SETP(F2, d, a, b, c, in[6] + 0x5a827999, 5);
+	MD4SETP(F2, a, b, c, d, in[ 2] + 0x5a827999, 3);
+	MD4SETP(F2, d, a, b, c, in[ 6] + 0x5a827999, 5);
 	MD4SETP(F2, c, d, a, b, in[10] + 0x5a827999, 9);
 	MD4SETP(F2, b, c, d, a, in[14] + 0x5a827999, 13);
-	MD4SETP(F2, a, b, c, d, in[3] + 0x5a827999, 3);
-	MD4SETP(F2, d, a, b, c, in[7] + 0x5a827999, 5);
+	MD4SETP(F2, a, b, c, d, in[ 3] + 0x5a827999, 3);
+	MD4SETP(F2, d, a, b, c, in[ 7] + 0x5a827999, 5);
 	MD4SETP(F2, c, d, a, b, in[11] + 0x5a827999, 9);
 	MD4SETP(F2, b, c, d, a, in[15] + 0x5a827999, 13);
 
-	MD4SETP(F3, a, b, c, d, in[0] + 0x6ed9eba1, 3);
-	MD4SETP(F3, d, a, b, c, in[8] + 0x6ed9eba1, 9);
-	MD4SETP(F3, c, d, a, b, in[4] + 0x6ed9eba1, 11);
+	MD4SETP(F3, a, b, c, d, in[ 0] + 0x6ed9eba1,  3);
+	MD4SETP(F3, d, a, b, c, in[ 8] + 0x6ed9eba1,  9);
+	MD4SETP(F3, c, d, a, b, in[ 4] + 0x6ed9eba1, 11);
 	MD4SETP(F3, b, c, d, a, in[12] + 0x6ed9eba1, 15);
-	MD4SETP(F3, a, b, c, d, in[2] + 0x6ed9eba1, 3);
-	MD4SETP(F3, d, a, b, c, in[10] + 0x6ed9eba1, 9);
-	MD4SETP(F3, c, d, a, b, in[6] + 0x6ed9eba1, 11);
+	MD4SETP(F3, a, b, c, d, in[ 2] + 0x6ed9eba1,  3);
+	MD4SETP(F3, d, a, b, c, in[10] + 0x6ed9eba1,  9);
+	MD4SETP(F3, c, d, a, b, in[ 6] + 0x6ed9eba1, 11);
 	MD4SETP(F3, b, c, d, a, in[14] + 0x6ed9eba1, 15);
-	MD4SETP(F3, a, b, c, d, in[1] + 0x6ed9eba1, 3);
-	MD4SETP(F3, d, a, b, c, in[9] + 0x6ed9eba1, 9);
-	MD4SETP(F3, c, d, a, b, in[5] + 0x6ed9eba1, 11);
+	MD4SETP(F3, a, b, c, d, in[ 1] + 0x6ed9eba1,  3);
+	MD4SETP(F3, d, a, b, c, in[ 9] + 0x6ed9eba1,  9);
+	MD4SETP(F3, c, d, a, b, in[ 5] + 0x6ed9eba1, 11);
 	MD4SETP(F3, b, c, d, a, in[13] + 0x6ed9eba1, 15);
-	MD4SETP(F3, a, b, c, d, in[3] + 0x6ed9eba1, 3);
-	MD4SETP(F3, d, a, b, c, in[11] + 0x6ed9eba1, 9);
-	MD4SETP(F3, c, d, a, b, in[7] + 0x6ed9eba1, 11);
+	MD4SETP(F3, a, b, c, d, in[ 3] + 0x6ed9eba1,  3);
+	MD4SETP(F3, d, a, b, c, in[11] + 0x6ed9eba1,  9);
+	MD4SETP(F3, c, d, a, b, in[ 7] + 0x6ed9eba1, 11);
 	MD4SETP(F3, b, c, d, a, in[15] + 0x6ed9eba1, 15);
 
 	state[0] += a;

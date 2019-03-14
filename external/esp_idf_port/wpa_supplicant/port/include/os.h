@@ -60,6 +60,7 @@ struct os_time {
  */
 int os_get_time(struct os_time *t);
 
+
 /* Helper macros for handling struct os_time */
 
 #define os_time_before(a, b) \
@@ -90,7 +91,9 @@ int os_get_time(struct os_time *t);
  * Note: The result is in seconds from Epoch, i.e., in UTC, not in local time
  * which is used by POSIX mktime().
  */
-int os_mktime(int year, int month, int day, int hour, int min, int sec, os_time_t *t);
+int os_mktime(int year, int month, int day, int hour, int min, int sec,
+	      os_time_t *t);
+
 
 /**
  * os_daemonize - Run in the background (detach from the controlling terminal)
@@ -132,7 +135,7 @@ unsigned long os_random(void);
  * configuration files when os_daemonize() may have changed the current working
  * directory and relative path would be pointing to a different location.
  */
-char *os_rel2abs_path(const char *rel_path);
+char * os_rel2abs_path(const char *rel_path);
 
 /**
  * os_program_init - Program initialization (called at start)
@@ -186,7 +189,7 @@ int os_unsetenv(const char *name);
  * binary and text files can be read with this function. The caller is
  * responsible for freeing the returned buffer with os_free().
  */
-char *os_readfile(const char *name, size_t *len);
+char * os_readfile(const char *name, size_t *len);
 
 /*
  * The following functions are wrapper for standard ANSI C or POSIX functions.
@@ -203,7 +206,7 @@ char *os_readfile(const char *name, size_t *len);
  * OS_NO_C_LIB_DEFINES can be defined to skip all defines here in which case
  * these functions need to be implemented in os_*.c file for the target system.
  */
-
+ 
 #ifndef os_malloc
 #define os_malloc(s) malloc((s))
 #endif
@@ -219,7 +222,8 @@ char *os_readfile(const char *name, size_t *len);
 
 #ifndef os_bzero
 #define os_bzero(s, n) bzero(s, n)
-#endif
+#endif 
+
 
 #ifndef os_strdup
 #ifdef _MSC_VER
@@ -228,7 +232,7 @@ char *os_readfile(const char *name, size_t *len);
 #define os_strdup(s) strdup(s)
 #endif
 #endif
-char *ets_strdup(const char *s);
+char * ets_strdup(const char *s);
 
 #ifndef os_memcpy
 #define os_memcpy(d, s, n) memcpy((d), (s), (n))
@@ -300,4 +304,6 @@ char *ets_strdup(const char *s);
  */
 size_t os_strlcpy(char *dest, const char *src, size_t siz);
 
-#endif							/* OS_H */
+
+
+#endif /* OS_H */

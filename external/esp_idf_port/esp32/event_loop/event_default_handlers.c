@@ -54,7 +54,8 @@
 #include "tcpip_adapter.h"
 #include "esp_log.h"
 
-#define DHCP_TIMEOUT (5)
+#define DHCP_TIMEOUT (5000000)
+#define DHCP_CHECK_INTERVAL (10000)
 
 static const char *TAG = "event";
 static int dhcp_timeleft = DHCP_TIMEOUT;
@@ -150,8 +151,8 @@ static void check_dhcp_status(tcpip_adapter_if_t tcpip_if)
 
 	dhcp_timeleft = DHCP_TIMEOUT;
 	while (g_dhcp_handle.state != DHCP_STATE_BOUND) {
-		sleep(1);
-		dhcp_timeleft -= 1;
+		usleep(DHCP_CHECK_INTERVAL);
+		dhcp_timeleft -= DHCP_CHECK_INTERVAL;
 		if (dhcp_timeleft <= 0) {
 			break;
 		}
@@ -380,4 +381,3 @@ void esp_event_set_default_wifi_handlers()
 
 	esp_register_shutdown_handler((shutdown_handler_t) esp_wifi_stop);
 }
-#endif

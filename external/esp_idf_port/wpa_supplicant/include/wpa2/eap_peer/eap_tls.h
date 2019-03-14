@@ -28,14 +28,16 @@
 #define EAP_TLS_H
 
 #include "eap_i.h"
-#include "eap_common.h"
-#include "eap.h"
-#include "wpa/wpabuf.h"
+#include "eap_common.h" 
+#include "eap.h" 
+#include "wpa/wpabuf.h" 
 
-void *eap_tls_init(struct eap_sm *sm);
+void * eap_tls_init(struct eap_sm *sm);
 void eap_tls_deinit(struct eap_sm *sm, void *priv);
-struct wpabuf *eap_tls_process(struct eap_sm *sm, void *priv, struct eap_method_ret *ret, const struct wpabuf *reqData);
+struct wpabuf * eap_tls_process(struct eap_sm *sm, void *priv,
+                                       struct eap_method_ret *ret,
+                                       const struct wpabuf *reqData);
 
-u8 *eap_tls_getKey(struct eap_sm *sm, void *priv, size_t *len);
+u8 * eap_tls_getKey(struct eap_sm *sm, void *priv, size_t *len);
 
-#endif							/* EAP_TLS_H */
+#endif /* EAP_TLS_H */

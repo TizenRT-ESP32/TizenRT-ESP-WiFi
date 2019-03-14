@@ -129,6 +129,7 @@
 #define ESP32_PERIPH_CPU_CPU3       27	/* INTR_STATUS_REG_0, bit 27 */
 #define ESP32_PERIPH_SPI0           28	/* INTR_STATUS_REG_0, bit 28 */
 #define ESP32_PERIPH_SPI1           29	/* INTR_STATUS_REG_0, bit 29 */
+#define ESP32_CPUINT_WIFI           0
 
 #define ESP32_PERIPH_SPI2           30	/* INTR_STATUS_REG_0, bit 30 */
 #define ESP32_PERIPH_SPI3           31	/* INTR_STATUS_REG_0, bit 31 */
@@ -410,7 +411,7 @@
 
 #define ESP32_NCPUINTS              32
 #define ESP32_CPUINT_MAX            (ESP32_NCPUINTS - 1)
-#define EPS32_CPUINT_PERIPHSET      0xdffe773f
+#define EPS32_CPUINT_PERIPHSET      0xdffe773e
 #define EPS32_CPUINT_INTERNALSET    0x200188c0
 
 /* Priority 1:   0-10, 12-13, 17-18    (15)

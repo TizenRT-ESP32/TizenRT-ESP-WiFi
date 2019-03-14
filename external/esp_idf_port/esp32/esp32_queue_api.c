@@ -49,6 +49,13 @@ enum {
 	HIGH,
 } queue_prio_e;
 
+typedef struct {
+    bool valid;
+    uint32_t mq_item_size;
+    mqd_t mqd_fd_send;
+    mqd_t mqd_fd_recv;
+}queue_info_t;
+
 /************************************************************************
  * Public Variables
  ************************************************************************/
@@ -145,7 +152,7 @@ void *IRAM_ATTR queue_create_wrapper(uint32_t queue_len, uint32_t item_size)
 	}
 	queues_info[mq_id].mqd_fd_recv = mq_open(name, O_RDWR | O_CREAT, 0666, &attr);
 	if (queues_info[mq_id].mqd_fd_recv == (mqd_t)ERROR) {
-        mq_close(queue_info->mqd_fd_send);
+        mq_close(queues_info[mq_id].mqd_fd_send);
 		return NULL;
 	}
 	queues_info[mq_id].valid = true;
@@ -243,7 +250,6 @@ int32_t IRAM_ATTR queue_send_from_isr_wrapper(void *queue, void *item, void *hpt
 	if (queue_info->mqd_fd_send != (mqd_t)ERROR) {
 		ret = mq_send(queue_info->mqd_fd_send, (char *)item, queue_info->mq_item_size, NORMAL);
 		if (ret == ERROR) {
-			ets_printf("queue_send_from_isr_wrapper error\n");
 			return pdFAIL;
 		}
 		return pdPASS;
@@ -353,7 +359,7 @@ int32_t IRAM_ATTR queue_recv_wrapper(void *queue, void *item, uint32_t block_tim
 				return pdFAIL;
 			}
 		} else {
-            calc_abs_time(&abstime, msecs); 
+            calc_abs_time(&abstime, block_time_tick); 
             ret = mq_timedreceive(queue_info->mqd_fd_recv, (char *)item, msglen, &prio, &abstime);
 			if (ret == ERROR) {
 				return pdFAIL;

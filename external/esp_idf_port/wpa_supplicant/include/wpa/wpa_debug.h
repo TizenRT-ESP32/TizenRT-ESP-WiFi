@@ -46,7 +46,7 @@
 #define MSG_DEBUG ESP_LOG_DEBUG
 #define MSG_MSGDUMP ESP_LOG_VERBOSE
 
-#else
+#else 
 enum { MSG_MSGDUMP, MSG_DEBUG, MSG_INFO, MSG_WARNING, MSG_ERROR };
 #endif
 
@@ -102,9 +102,11 @@ static inline void wpa_hexdump_ascii_key(int level, const char *title, const u8 
 {
 }
 
+
 void wpa_hexdump(int level, const char *title, const u8 *buf, size_t len);
 
-static inline void wpa_hexdump_buf(int level, const char *title, const struct wpabuf *buf)
+static inline void wpa_hexdump_buf(int level, const char *title,
+				   const struct wpabuf *buf)
 {
 	wpa_hexdump(level, title, wpabuf_head(buf), wpabuf_len(buf));
 }
@@ -124,7 +126,9 @@ static inline void wpa_hexdump_buf(int level, const char *title, const struct wp
  */
 void wpa_hexdump_key(int level, const char *title, const u8 *buf, size_t len);
 
-static inline void wpa_hexdump_buf_key(int level, const char *title, const struct wpabuf *buf)
+
+static inline void wpa_hexdump_buf_key(int level, const char *title,
+				       const struct wpabuf *buf)
 {
 	wpa_hexdump_key(level, title, wpabuf_head(buf), wpabuf_len(buf));
 }
@@ -142,7 +146,8 @@ static inline void wpa_hexdump_buf_key(int level, const char *title, const struc
  * the hex numbers and ASCII characters (for printable range) are shown. 16
  * bytes per line will be shown.
  */
-void wpa_hexdump_ascii(int level, const char *title, const u8 *buf, size_t len);
+void wpa_hexdump_ascii(int level, const char *title, const u8 *buf,
+		       size_t len);
 
 /**
  * wpa_hexdump_ascii_key - conditional hex dump, hide keys
@@ -158,7 +163,8 @@ void wpa_hexdump_ascii(int level, const char *title, const u8 *buf, size_t len);
  * bytes per line will be shown. This works like wpa_hexdump_ascii(), but by
  * default, does not include secret keys (passwords, etc.) in debug output.
  */
-void wpa_hexdump_ascii_key(int level, const char *title, const u8 *buf, size_t len);
+void wpa_hexdump_ascii_key(int level, const char *title, const u8 *buf,
+			   size_t len);
 #else
 #define wpa_printf(level,fmt, args...)
 #define wpa_hexdump(...)
@@ -200,14 +206,20 @@ void wpa_msg(void *ctx, int level, const char *fmt, ...) PRINTF_FORMAT(3, 4);
  * attached ctrl_iface monitors. In other words, it can be used for frequent
  * events that do not need to be sent to syslog.
  */
-void wpa_msg_ctrl(void *ctx, int level, const char *fmt, ...) PRINTF_FORMAT(3, 4);
+void wpa_msg_ctrl(void *ctx, int level, const char *fmt, ...)
+PRINTF_FORMAT(3, 4);
 
-typedef void (*wpa_msg_cb_func)(void *ctx, int level, const char *txt, size_t len);
+typedef void (*wpa_msg_cb_func)(void *ctx, int level, const char *txt,
+				size_t len);
 
 typedef void (*eloop_timeout_handler)(void *eloop_data, void *user_ctx);
 
-int eloop_cancel_timeout(eloop_timeout_handler handler, void *eloop_data, void *user_data);
+int eloop_cancel_timeout(eloop_timeout_handler handler,
+			 void *eloop_data, void *user_data);
 
-int eloop_register_timeout(unsigned int secs, unsigned int usecs, eloop_timeout_handler handler, void *eloop_data, void *user_data);
+int eloop_register_timeout(unsigned int secs, unsigned int usecs,
+			   eloop_timeout_handler handler,
+			   void *eloop_data, void *user_data);
 
-#endif							/* WPA_DEBUG_H */
+
+#endif /* WPA_DEBUG_H */

@@ -49,7 +49,6 @@ extern wps_crypto_funcs_t wps_crypto_funcs;
  * Prime: 2^768 - 2 ^704 - 1 + 2^64 * { [2^638 pi] + 149686 }
  */
 static const u8 dh_group1_generator[1] = { 0x02 };
-
 static const u8 dh_group1_prime[96] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -70,7 +69,6 @@ static const u8 dh_group1_prime[96] = {
  * Prime: 2^1024 - 2^960 - 1 + 2^64 * { [2^894 pi] + 129093 }
  */
 static const u8 dh_group2_generator[1] = { 0x02 };
-
 static const u8 dh_group2_prime[128] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -90,14 +88,13 @@ static const u8 dh_group2_prime[128] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
 
-#endif							/* ALL_DH_GROUPS */
+#endif /* ALL_DH_GROUPS */
 
 /* RFC 3526, 2. Group 5 - 1536 Bit MODP
  * Generator: 2
  * Prime: 2^1536 - 2^1472 - 1 + 2^64 * { [2^1406 pi] + 741804 }
  */
 static const u8 dh_group5_generator[1] = { 0x02 };
-
 static const u8 dh_group5_prime[192] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -132,7 +129,6 @@ static const u8 dh_group5_prime[192] = {
  * Prime: 2^2048 - 2^1984 - 1 + 2^64 * { [2^1918 pi] + 124476 }
  */
 static const u8 dh_group14_generator[1] = { 0x02 };
-
 static const u8 dh_group14_prime[256] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -173,7 +169,6 @@ static const u8 dh_group14_prime[256] = {
  * Prime: 2^3072 - 2^3008 - 1 + 2^64 * { [2^2942 pi] + 1690314 }
  */
 static const u8 dh_group15_generator[1] = { 0x02 };
-
 static const u8 dh_group15_prime[384] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -230,7 +225,6 @@ static const u8 dh_group15_prime[384] = {
  * Prime: 2^4096 - 2^4032 - 1 + 2^64 * { [2^3966 pi] + 240904 }
  */
 static const u8 dh_group16_generator[1] = { 0x02 };
-
 static const u8 dh_group16_prime[512] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -303,7 +297,6 @@ static const u8 dh_group16_prime[512] = {
  * Prime: 2^6144 - 2^6080 - 1 + 2^64 * { [2^6014 pi] + 929484 }
  */
 static const u8 dh_group17_generator[1] = { 0x02 };
-
 static const u8 dh_group17_prime[768] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -408,7 +401,6 @@ static const u8 dh_group17_prime[768] = {
  * Prime: 2^8192 - 2^8128 - 1 + 2^64 * { [2^8062 pi] + 4743158 }
  */
 static const u8 dh_group18_generator[1] = { 0x02 };
-
 static const u8 dh_group18_prime[1024] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 	0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
@@ -540,11 +532,13 @@ static const u8 dh_group18_prime[1024] = {
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
 
-#endif							/* ALL_DH_GROUPS */
+#endif /* ALL_DH_GROUPS */
+
 
 #define DH_GROUP(id) \
 { id, dh_group ## id ## _generator, sizeof(dh_group ## id ## _generator), \
 dh_group ## id ## _prime, sizeof(dh_group ## id ## _prime) }
+		
 
 static struct dh_group dh_groups[] = {
 	DH_GROUP(5),
@@ -556,19 +550,20 @@ static struct dh_group dh_groups[] = {
 	DH_GROUP(16),
 	DH_GROUP(17),
 	DH_GROUP(18)
-#endif							/* ALL_DH_GROUPS */
+#endif /* ALL_DH_GROUPS */
 };
 
 #define NUM_DH_GROUPS (sizeof(dh_groups) / sizeof(dh_groups[0]))
 
-const struct dh_group *dh_groups_get(int id)
+
+const struct dh_group * 
+dh_groups_get(int id)
 {
 	size_t i;
 
 	for (i = 0; i < NUM_DH_GROUPS; i++) {
-		if (dh_groups[i].id == id) {
+		if (dh_groups[i].id == id)
 			return &dh_groups[i];
-		}
 	}
 	return NULL;
 }
@@ -579,22 +574,22 @@ const struct dh_group *dh_groups_get(int id)
  * @priv: Pointer for returning Diffie-Hellman private key
  * Returns: Diffie-Hellman public value
  */
-struct wpabuf *dh_init(const struct dh_group *dh, struct wpabuf **priv)
+struct wpabuf * 
+dh_init(const struct dh_group *dh, struct wpabuf **priv)
 {
 	struct wpabuf *pv;
 	size_t pv_len;
 
-	if (dh == NULL) {
+	if (dh == NULL)
 		return NULL;
-	}
 
 	wpabuf_free(*priv);
 	*priv = wpabuf_alloc(dh->prime_len);
-	if (*priv == NULL) {
+	if (*priv == NULL)
 		return NULL;
-	}
 
-	if (random_get_bytes(wpabuf_put(*priv, dh->prime_len), dh->prime_len)) {
+	if (random_get_bytes(wpabuf_put(*priv, dh->prime_len), dh->prime_len))
+	{
 		wpabuf_free(*priv);
 		*priv = NULL;
 		return NULL;
@@ -608,12 +603,14 @@ struct wpabuf *dh_init(const struct dh_group *dh, struct wpabuf **priv)
 
 	pv_len = dh->prime_len;
 	pv = wpabuf_alloc(pv_len);
-	if (pv == NULL) {
+	if (pv == NULL)
 		return NULL;
-	}
 
 	if (wps_crypto_funcs.crypto_mod_exp) {
-		if (wps_crypto_funcs.crypto_mod_exp(dh->generator, dh->generator_len, wpabuf_head(*priv), wpabuf_len(*priv), dh->prime, dh->prime_len, wpabuf_mhead(pv), &pv_len)) {
+		if (wps_crypto_funcs.crypto_mod_exp(dh->generator, dh->generator_len,
+						    wpabuf_head(*priv), wpabuf_len(*priv),
+						    dh->prime, dh->prime_len, wpabuf_mhead(pv),
+						    &pv_len)) {
 			wpabuf_free(pv);
 			wpa_printf(MSG_INFO, "DH: crypto_mod_exp failed");
 			return NULL;
@@ -629,6 +626,7 @@ struct wpabuf *dh_init(const struct dh_group *dh, struct wpabuf **priv)
 	return pv;
 }
 
+
 /**
  * dh_derive_shared - Derive shared Diffie-Hellman key
  * @peer_public: Diffie-Hellman public value from peer
@@ -636,23 +634,27 @@ struct wpabuf *dh_init(const struct dh_group *dh, struct wpabuf **priv)
  * @dh: Selected Diffie-Hellman group
  * Returns: Diffie-Hellman shared key
  */
-struct wpabuf *dh_derive_shared(const struct wpabuf *peer_public, const struct wpabuf *own_private, const struct dh_group *dh)
+struct wpabuf * 
+dh_derive_shared(const struct wpabuf *peer_public,
+				 const struct wpabuf *own_private,
+				 const struct dh_group *dh)
 {
 	struct wpabuf *shared;
 	size_t shared_len;
 
-	if (dh == NULL || peer_public == NULL || own_private == NULL) {
+	if (dh == NULL || peer_public == NULL || own_private == NULL)
 		return NULL;
-	}
 
 	shared_len = dh->prime_len;
 	shared = wpabuf_alloc(shared_len);
-	if (shared == NULL) {
+	if (shared == NULL)
 		return NULL;
-	}
 
 	if (wps_crypto_funcs.crypto_mod_exp) {
-		if (wps_crypto_funcs.crypto_mod_exp(wpabuf_head(peer_public), wpabuf_len(peer_public), wpabuf_head(own_private), wpabuf_len(own_private), dh->prime, dh->prime_len, wpabuf_mhead(shared), &shared_len)) {
+		if (wps_crypto_funcs.crypto_mod_exp(wpabuf_head(peer_public), wpabuf_len(peer_public),
+						    wpabuf_head(own_private), wpabuf_len(own_private),
+						    dh->prime, dh->prime_len,
+						    wpabuf_mhead(shared), &shared_len)) {
 			wpabuf_free(shared);
 			wpa_printf(MSG_INFO, "DH: crypto_mod_exp failed");
 			return NULL;

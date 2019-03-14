@@ -165,7 +165,7 @@ static int32_t IRAM_ATTR semphr_take_wrapper(void *semphr, uint32_t block_time_t
 
 	} else {
 		struct timespec abstime;
-	    cal_abs_time(&abstime, block_time_tick);	
+	    calc_abs_time(&abstime, block_time_tick);	
         ret = sem_timedwait(semphr, &abstime);
 		if (ret == OK) {
 			return pdPASS;

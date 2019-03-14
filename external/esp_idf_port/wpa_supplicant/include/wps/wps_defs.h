@@ -33,15 +33,15 @@ extern int wps_version_number;
 extern int wps_testing_dummy_cred;
 #define WPS_VERSION wps_version_number
 
-#else							/* CONFIG_WPS_TESTING */
+#else /* CONFIG_WPS_TESTING */
 
 #ifdef CONFIG_WPS2
 #define WPS_VERSION 0x20
-#else							/* CONFIG_WPS2 */
+#else /* CONFIG_WPS2 */
 #define WPS_VERSION 0x10
-#endif							/* CONFIG_WPS2 */
+#endif /* CONFIG_WPS2 */
 
-#endif							/* CONFIG_WPS_TESTING */
+#endif /* CONFIG_WPS_TESTING */
 
 #define CONFIG_WPS_STRICT
 
@@ -154,7 +154,7 @@ enum wps_attribute {
 	ATTR_APPSESSIONKEY = 0x1063,
 	ATTR_WEPTRANSMITKEY = 0x1064,
 	ATTR_REQUESTED_DEV_TYPE = 0x106a,
-	ATTR_EXTENSIBILITY_TEST = 0x10fa	/* _NOT_ defined in the spec */
+	ATTR_EXTENSIBILITY_TEST = 0x10fa /* _NOT_ defined in the spec */
 };
 
 #define WPS_VENDOR_ID_WFA 14122
@@ -271,7 +271,7 @@ enum wps_error_indication {
 #define WPS_CONFIG_PHY_PUSHBUTTON 0x0480
 #define WPS_CONFIG_VIRT_DISPLAY 0x2008
 #define WPS_CONFIG_PHY_DISPLAY 0x4008
-#endif							/* CONFIG_WPS2 */
+#endif /* CONFIG_WPS2 */
 
 /* Connection Type Flags */
 #define WPS_CONN_ESS 0x01
@@ -291,6 +291,7 @@ enum wps_assoc_state {
 	WPS_ASSOC_FAILURE = 3,
 	WPS_ASSOC_IP_FAILURE = 4
 };
+
 
 #define WPS_DEV_OUI_WFA 0x0050f204
 
@@ -330,6 +331,7 @@ enum wps_dev_subcateg {
 	WPS_DEV_PHONE_WINDOWS_MOBILE = 1
 };
 
+
 /* Request Type */
 enum wps_request_type {
 	WPS_REQ_ENROLLEE_INFO = 0,
@@ -355,4 +357,4 @@ enum wps_response_type {
 
 #define WPS_MAX_DIS_AP_NUM	10
 
-#endif							/* WPS_DEFS_H */
+#endif /* WPS_DEFS_H */

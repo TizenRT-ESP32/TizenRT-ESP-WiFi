@@ -190,7 +190,7 @@ extern "C" {
 	typedef esp_err_t(*system_event_handler_t) (system_event_t * event);
 
 /**
-  * @brief  Send a event to event task
+  * @brief  Send an event to event task
   *
   * @attention 1. Other task/modules, such as the TCPIP module, can call this API to send an event to event task
   *

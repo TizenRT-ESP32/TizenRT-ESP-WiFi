@@ -25,34 +25,37 @@
 
 /* Swap bytes in 16 bit value.  */
 #ifdef __GNUC__
-#define __bswap_16(x) \
+# define __bswap_16(x) \
     (__extension__							      \
      ({ unsigned short int __bsx = (x);					      \
         ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8)); }))
 #else
-static INLINE unsigned short int __bswap_16(unsigned short int __bsx)
+static INLINE unsigned short int
+__bswap_16 (unsigned short int __bsx)
 {
-	return ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8));
+  return ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8));
 }
 #endif
 
 /* Swap bytes in 32 bit value.  */
 #ifdef __GNUC__
-#define __bswap_32(x) \
+# define __bswap_32(x) \
     (__extension__							      \
      ({ unsigned int __bsx = (x);					      \
         ((((__bsx) & 0xff000000) >> 24) | (((__bsx) & 0x00ff0000) >>  8) |    \
 	 (((__bsx) & 0x0000ff00) <<  8) | (((__bsx) & 0x000000ff) << 24)); }))
 #else
-static INLINE unsigned int __bswap_32(unsigned int __bsx)
+static INLINE unsigned int
+__bswap_32 (unsigned int __bsx)
 {
-	return ((((__bsx) & 0xff000000) >> 24) | (((__bsx) & 0x00ff0000) >> 8) | (((__bsx) & 0x0000ff00) << 8) | (((__bsx) & 0x000000ff) << 24));
+  return ((((__bsx) & 0xff000000) >> 24) | (((__bsx) & 0x00ff0000) >>  8) |
+	  (((__bsx) & 0x0000ff00) <<  8) | (((__bsx) & 0x000000ff) << 24));
 }
 #endif
 
 #if defined __GNUC__ && __GNUC__ >= 2
 /* Swap bytes in 64 bit value.  */
-#define __bswap_constant_64(x) \
+# define __bswap_constant_64(x) \
      ((((x) & 0xff00000000000000ull) >> 56)				      \
       | (((x) & 0x00ff000000000000ull) >> 40)				      \
       | (((x) & 0x0000ff0000000000ull) >> 24)				      \
@@ -62,7 +65,7 @@ static INLINE unsigned int __bswap_32(unsigned int __bsx)
       | (((x) & 0x000000000000ff00ull) << 40)				      \
       | (((x) & 0x00000000000000ffull) << 56))
 
-#define __bswap_64(x) \
+# define __bswap_64(x) \
      (__extension__							      \
       ({ union { __extension__ unsigned long long int __ll;		      \
 		 unsigned int __l[2]; } __w, __r;			      \
@@ -77,4 +80,4 @@ static INLINE unsigned int __bswap_32(unsigned int __bsx)
 	 __r.__ll; }))
 #endif
 
-#endif							/* BYTESWAP_H */
+#endif /* BYTESWAP_H */

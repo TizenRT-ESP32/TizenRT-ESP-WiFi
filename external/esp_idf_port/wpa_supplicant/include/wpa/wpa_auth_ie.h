@@ -46,21 +46,23 @@ struct wpa_eapol_ie_parse {
 	size_t lifetime_len;
 	const u8 *error;
 	size_t error_len;
-#endif							/* CONFIG_PEERKEY */
+#endif /* CONFIG_PEERKEY */
 #ifdef CONFIG_IEEE80211W
 	const u8 *igtk;
 	size_t igtk_len;
-#endif							/* CONFIG_IEEE80211W */
+#endif /* CONFIG_IEEE80211W */
 #ifdef CONFIG_IEEE80211R
 	const u8 *mdie;
 	size_t mdie_len;
 	const u8 *ftie;
 	size_t ftie_len;
-#endif							/* CONFIG_IEEE80211R */
+#endif /* CONFIG_IEEE80211R */
 };
 
-int wpa_parse_kde_ies(const u8 *buf, size_t len, struct wpa_eapol_ie_parse *ie);
-u8 *wpa_add_kde(u8 *pos, u32 kde, const u8 *data, size_t data_len, const u8 *data2, size_t data2_len);
+int wpa_parse_kde_ies(const u8 *buf, size_t len,
+		      struct wpa_eapol_ie_parse *ie);
+u8 * wpa_add_kde(u8 *pos, u32 kde, const u8 *data, size_t data_len,
+		 const u8 *data2, size_t data2_len);
 int wpa_auth_gen_wpa_ie(struct wpa_authenticator *wpa_auth);
 
-#endif							/* WPA_AUTH_IE_H */
+#endif /* WPA_AUTH_IE_H */
