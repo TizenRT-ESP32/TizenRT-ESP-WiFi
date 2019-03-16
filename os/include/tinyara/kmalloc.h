@@ -121,10 +121,15 @@ extern "C" {
  * (CONFIG_BUILD_KERNEL), the following are declared in stdlib.h and are
  * directly callable.
  */
-
+#if CONFIG_MM_NHEAPS > 1 && CONFIG_MM_REGIONS > 1
+#define kumm_malloc(s)          malloc_at(0, s)
+#define kumm_zalloc(s)          zalloc_at(0, s)
+#define kumm_realloc(p, s)      realloc_at(0, p, s)
+#else
 #define kumm_malloc(s)          malloc(s)
 #define kumm_zalloc(s)          zalloc(s)
 #define kumm_realloc(p, s)      realloc(p, s)
+#endif
 #define kumm_memalign(a, s)     memalign(a, s)
 #define kumm_free(p)            free(p)
 #define kumm_mallinfo()         mallinfo()

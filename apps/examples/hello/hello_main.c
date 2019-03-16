@@ -74,12 +74,13 @@ int hello_main(int argc, char *argv[])
 		esp_spiram_test();
 	} else {
 		int size = 100 * 1024 * sizeof(int);
-		int *malloctest = (int*)malloc_at(1, size);
+		int *malloctest = (int*)malloc(size);
 		printf("malloctest addr 0x%x\n",malloctest);
 		if(malloctest) {
 			memset(malloctest, 0xAB, size);
 			printf("0x%x, 0x%x, 0x%x\n",malloctest[0], malloctest[1024], malloctest[10240]);
 		}
+		free(malloctest);
 	}
 	return 0;
 }
