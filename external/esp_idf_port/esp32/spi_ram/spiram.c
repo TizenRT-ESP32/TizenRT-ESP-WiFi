@@ -1,3 +1,21 @@
+/******************************************************************
+ *
+ * Copyright 2019 Samsung Electronics All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ ******************************************************************/
+
 /*
 Abstraction layer for spi-ram. For now, it's no more than a stub for the spiram_psram functions, but if
 we add more types of external RAM memory, this can be made into a more intelligent dispatcher.
@@ -20,13 +38,11 @@ we add more types of external RAM memory, this can be made into a more intellige
 #include <stdint.h>
 #include <string.h>
 
-//#include "sdkconfig.h"
+
 #include "esp_attr.h"
 #include "esp_err.h"
 #include "spiram_psram.h"
-//#include "esp_log.h"
-//#include "freertos/FreeRTOS.h"
-//#include "freertos/xtensa_api.h"
+#include "esp_log.h"
 #include "chip/esp32_soc.h"
 #include "esp_heap_caps.h"
 #include "soc/soc_memory_layout.h"
@@ -46,7 +62,7 @@ we add more types of external RAM memory, this can be made into a more intellige
 
 #ifdef CONFIG_SPIRAM_SUPPORT
 
-//static const char* TAG = "spiram";
+static const char* TAG = "spiram";
 
 #if CONFIG_SPIRAM_SPEED_40M && CONFIG_ESPTOOLPY_FLASHFREQ_40M
 #define PSRAM_SPEED PSRAM_CACHE_F40M_S40M
@@ -114,15 +130,12 @@ esp_err_t esp_spiram_init()
 	esp_err_t r;
 	r = psram_enable(PSRAM_SPEED, PSRAM_MODE);
 	if (r != ESP_OK) {
-#if CONFIG_SPIRAM_IGNORE_NOTFOUND
 		ESP_EARLY_LOGE(TAG, "SPI RAM enabled but initialization failed. Bailing out.");
-#endif
-		ets_printf("SPI RAM enabled but initialization failed. Bailing out.");
 		return r;
 	}
-	//ESP_EARLY_LOGI(TAG, "SPI RAM mode: %s", PSRAM_SPEED == PSRAM_CACHE_F40M_S40M ? "flash 40m sram 40m" : \
+	ESP_EARLY_LOGI(TAG, "SPI RAM mode: %s", PSRAM_SPEED == PSRAM_CACHE_F40M_S40M ? "flash 40m sram 40m" : \
 	PSRAM_SPEED == PSRAM_CACHE_F80M_S40M ? "flash 80m sram 40m" : PSRAM_SPEED == PSRAM_CACHE_F80M_S80M ? "flash 80m sram 80m" : "ERROR");
-	//ESP_EARLY_LOGI(TAG, "PSRAM initialized, cache is in %s mode.", \
+	ESP_EARLY_LOGI(TAG, "PSRAM initialized, cache is in %s mode.", \
 	(PSRAM_MODE == PSRAM_VADDR_MODE_EVENODD) ? "even/odd (2-core)" : (PSRAM_MODE == PSRAM_VADDR_MODE_LOWHIGH) ? "low/high (2-core)" : (PSRAM_MODE == PSRAM_VADDR_MODE_NORMAL) ? "normal (1-core)" : "ERROR");
 	spiram_inited = true;
 	return ESP_OK;
@@ -160,53 +173,6 @@ esp_err_t esp_spiram_reserve_dma_pool(size_t size)
 	return heap_caps_add_region_with_caps(caps, (intptr_t) dma_heap, (intptr_t) dma_heap + size - 1);
 #endif
 }
-
-#if 0
-esp_err_t esp_spiram_init()
-{
-    esp_err_t r;
-    r = psram_enable(PSRAM_SPEED, PSRAM_MODE);
-    if (r != ESP_OK) {
-#if CONFIG_SPIRAM_IGNORE_NOTFOUND
-        ESP_EARLY_LOGE(TAG, "SPI RAM enabled but initialization failed. Bailing out.");
-#endif
-        printf("SPI RAM enabled but initialization failed. Bailing out.");
-        return r;
-    }
-
-    //ESP_EARLY_LOGI(TAG, "SPI RAM mode: %s", PSRAM_SPEED == PSRAM_CACHE_F40M_S40M ? "flash 40m sram 40m" : \
-                                          PSRAM_SPEED == PSRAM_CACHE_F80M_S40M ? "flash 80m sram 40m" : \
-                                          PSRAM_SPEED == PSRAM_CACHE_F80M_S80M ? "flash 80m sram 80m" : "ERROR");
-    //ESP_EARLY_LOGI(TAG, "PSRAM initialized, cache is in %s mode.", \
-                                          (PSRAM_MODE==PSRAM_VADDR_MODE_EVENODD)?"even/odd (2-core)": \
-                                          (PSRAM_MODE==PSRAM_VADDR_MODE_LOWHIGH)?"low/high (2-core)": \
-                                          (PSRAM_MODE==PSRAM_VADDR_MODE_NORMAL)?"normal (1-core)":"ERROR");
-    spiram_inited=true;
-    return ESP_OK;
-}
-
-
-esp_err_t esp_spiram_add_to_heapalloc()
-{
-    //ESP_EARLY_LOGI(TAG, "Adding pool of %dK of external SPI memory to heap allocator", CONFIG_SPIRAM_SIZE/1024);
-    //Add entire external RAM region to heap allocator. Heap allocator knows the capabilities of this type of memory, so there's
-    //no need to explicitly specify them.
-    uint32_t caps[]={MALLOC_CAP_SPIRAM, 0, MALLOC_CAP_8BIT|MALLOC_CAP_32BIT};
-    return heap_caps_add_region_with_caps(caps,(intptr_t)SOC_EXTRAM_DATA_LOW, (intptr_t)SOC_EXTRAM_DATA_LOW + CONFIG_SPIRAM_SIZE-1);
-}
-
-
-static uint8_t *dma_heap;
-
-esp_err_t esp_spiram_reserve_dma_pool(size_t size) {
-    if (size==0) return ESP_OK; //no-op
-    //ESP_EARLY_LOGI(TAG, "Reserving pool of %dK of internal memory for DMA/internal allocations", size/1024);
-    dma_heap=heap_caps_malloc(size, MALLOC_CAP_DMA|MALLOC_CAP_INTERNAL);
-    if (!dma_heap) return ESP_ERR_NO_MEM;
-    uint32_t caps[]={MALLOC_CAP_DMA|MALLOC_CAP_INTERNAL, 0, MALLOC_CAP_8BIT|MALLOC_CAP_32BIT};
-    return heap_caps_add_region_with_caps(caps, (intptr_t) dma_heap, (intptr_t) dma_heap+size-1);
-}
-#endif
 
 size_t esp_spiram_get_size()
 {
