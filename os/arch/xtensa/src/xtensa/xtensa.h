@@ -355,6 +355,7 @@ void weak_function xtensa_dma_initialize(void);
 
 #if CONFIG_MM_REGIONS > 1
 void xtensa_add_region(void);
+void xtensa_up_addregion(void); //add region after spiram initialized
 #else
 #define xtensa_add_region()
 #endif

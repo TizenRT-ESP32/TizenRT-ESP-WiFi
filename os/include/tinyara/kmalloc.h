@@ -144,9 +144,17 @@ extern "C" {
 #define kmm_givesemaphore(a)     umm_givesemaphore(a)
 
 #if CONFIG_MM_NHEAPS > 1 && CONFIG_MM_REGIONS > 1
+
+#ifdef CONFIG_FS_TMPFS_HEAP_INDEX
 #define kmm_malloc(s)          malloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_zalloc(s)          zalloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_realloc(p, s)      realloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, p, s)
+#else /*multi heap case, use IRAM with index 0 as default*/
+#define kmm_malloc(s)          malloc_at(0, s)
+#define kmm_zalloc(s)          zalloc_at(0, s)
+#define kmm_realloc(p, s)      realloc_at(0, p, s)
+#endif
+
 #else
 #define kmm_malloc(s)          malloc(s)
 #define kmm_zalloc(s)          zalloc(s)
@@ -169,9 +177,17 @@ extern "C" {
 #define kmm_givesemaphore(a)    umm_givesemaphore(a)
 
 #if CONFIG_MM_NHEAPS > 1 && CONFIG_MM_REGIONS > 1
+
+#ifdef CONFIG_FS_TMPFS_HEAP_INDEX
 #define kmm_malloc(s)          malloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_zalloc(s)          zalloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_realloc(p, s)      realloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, p, s)
+#else /*multi heap case, use IRAM with index 0 as default*/
+#define kmm_malloc(s)          malloc_at(0, s)
+#define kmm_zalloc(s)          zalloc_at(0, s)
+#define kmm_realloc(p, s)      realloc_at(0, p, s)
+#endif
+
 #else
 #define kmm_malloc(s)          malloc(s)
 #define kmm_zalloc(s)          zalloc(s)

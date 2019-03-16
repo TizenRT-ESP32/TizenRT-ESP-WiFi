@@ -110,5 +110,34 @@ void up_allocate_heap(FAR void **heap_start, size_t *heap_size)
 #if CONFIG_MM_REGIONS > 1
 void xtensa_add_region(void)
 {
+
 }
+
+/****************************************************************************
+ * Name: up_addregion
+ ****************************************************************************/
+void up_addregion(void)
+{
+
+}
+
+/****************************************************************************
+ * Name: up_addregion after spiram initialized
+ ****************************************************************************/
+void xtensa_up_addregion(void)
+{
+	int region_cnt;
+
+	for (region_cnt = 1; region_cnt < CONFIG_MM_REGIONS; region_cnt++) {
+		if (heapx_is_init[regionx_heap_idx[region_cnt]] != true) {
+ets_printf("spiram-> mm_initialize start %d , size %d\n",regionx_start[region_cnt],regionx_size[region_cnt]);
+			mm_initialize(&g_mmheap[regionx_heap_idx[region_cnt]], regionx_start[region_cnt], regionx_size[region_cnt]);
+			heapx_is_init[regionx_heap_idx[region_cnt]] = true;
+			continue;
+		}
+		mm_addregion(&g_mmheap[regionx_heap_idx[region_cnt]], regionx_start[region_cnt], regionx_size[region_cnt]);
+	}
+
+}
+
 #endif
