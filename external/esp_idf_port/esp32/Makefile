@@ -44,8 +44,8 @@ ESP32_CSRCS += $(wildcard ./hwcrypto/*.c)
 
 #ESP32 external SPIRAM
 ifeq ($(CONFIG_SPIRAM_SUPPORT), y)
-CFLAGS += -I./heap/include
-ESP32_CSRCS += spi_ram/spiram.c  spi_ram/spiram_psram.c gpio_periph.c
+#CFLAGS += -I./heap/include
+ESP32_CSRCS += spi_ram/spiram.c  spi_ram/spiram_psram.c
 endif
 
 ESP32_COBJS = $(ESP32_CSRCS:.c=$(OBJEXT))

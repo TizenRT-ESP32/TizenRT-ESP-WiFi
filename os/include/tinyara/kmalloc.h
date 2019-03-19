@@ -121,10 +121,15 @@ extern "C" {
  * (CONFIG_BUILD_KERNEL), the following are declared in stdlib.h and are
  * directly callable.
  */
-
+#if CONFIG_MM_NHEAPS > 1 && CONFIG_MM_REGIONS > 1
+#define kumm_malloc(s)          malloc_at(0, s)
+#define kumm_zalloc(s)          zalloc_at(0, s)
+#define kumm_realloc(p, s)      realloc_at(0, p, s)
+#else
 #define kumm_malloc(s)          malloc(s)
 #define kumm_zalloc(s)          zalloc(s)
 #define kumm_realloc(p, s)      realloc(p, s)
+#endif
 #define kumm_memalign(a, s)     memalign(a, s)
 #define kumm_free(p)            free(p)
 #define kumm_mallinfo()         mallinfo()
@@ -144,9 +149,17 @@ extern "C" {
 #define kmm_givesemaphore(a)     umm_givesemaphore(a)
 
 #if CONFIG_MM_NHEAPS > 1 && CONFIG_MM_REGIONS > 1
+
+#ifdef CONFIG_FS_TMPFS_HEAP_INDEX
 #define kmm_malloc(s)          malloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_zalloc(s)          zalloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_realloc(p, s)      realloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, p, s)
+#else /*multi heap case, use IRAM with index 0 as default*/
+#define kmm_malloc(s)          malloc_at(0, s)
+#define kmm_zalloc(s)          zalloc_at(0, s)
+#define kmm_realloc(p, s)      realloc_at(0, p, s)
+#endif
+
 #else
 #define kmm_malloc(s)          malloc(s)
 #define kmm_zalloc(s)          zalloc(s)
@@ -169,9 +182,17 @@ extern "C" {
 #define kmm_givesemaphore(a)    umm_givesemaphore(a)
 
 #if CONFIG_MM_NHEAPS > 1 && CONFIG_MM_REGIONS > 1
+
+#ifdef CONFIG_FS_TMPFS_HEAP_INDEX
 #define kmm_malloc(s)          malloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_zalloc(s)          zalloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, s)
 #define kmm_realloc(p, s)      realloc_at(CONFIG_FS_TMPFS_HEAP_INDEX, p, s)
+#else /*multi heap case, use IRAM with index 0 as default*/
+#define kmm_malloc(s)          malloc_at(0, s)
+#define kmm_zalloc(s)          zalloc_at(0, s)
+#define kmm_realloc(p, s)      realloc_at(0, p, s)
+#endif
+
 #else
 #define kmm_malloc(s)          malloc(s)
 #define kmm_zalloc(s)          zalloc(s)

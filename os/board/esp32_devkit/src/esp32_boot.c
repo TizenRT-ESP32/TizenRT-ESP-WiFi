@@ -69,6 +69,7 @@
 #include "esp32_core.h"
 #include "esp32_i2c.h"
 #include <tinyara/gpio.h>
+#include <../xtensa/xtensa.h>
 #ifdef CONFIG_SPIRAM_USE_CAPS_ALLOC
 #include <esp_heap_caps.h>
 #endif
@@ -340,6 +341,11 @@ void board_initialize(void)
 #ifdef CONFIG_SPIRAM_SUPPORT
 	esp_spiram_init_cache();
 	esp_spiram_init();
+#endif
+
+//memory management of tizenrt
+#if CONFIG_MM_REGIONS > 1
+	xtensa_up_addregion(); //addregion after spiram init, to replace common up_addregion in os_start
 #endif
 
 	/*no-os heap configure*/
