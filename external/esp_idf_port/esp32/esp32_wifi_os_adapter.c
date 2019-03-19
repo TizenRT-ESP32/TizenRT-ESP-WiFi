@@ -630,17 +630,17 @@ uint32_t IRAM_ATTR esp_get_free_heap_size(void)
 
 static void *IRAM_ATTR malloc_internal_wrapper(size_t size)
 {
-	return malloc(size);
+	return malloc_at(0, size);
 }
 
 static void *IRAM_ATTR realloc_internal_wrapper(void *ptr, size_t size)
 {
-	return realloc(ptr, size);
+	return realloc_at(0, ptr, size);
 }
 
 static void *IRAM_ATTR calloc_internal_wrapper(size_t n, size_t size)
 {
-	return calloc(n, size);
+	return calloc_at(0, n, size);
 }
 
 static void *IRAM_ATTR zalloc_internal_wrapper(size_t size)
