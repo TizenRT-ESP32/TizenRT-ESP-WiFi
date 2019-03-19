@@ -645,7 +645,7 @@ static void *IRAM_ATTR calloc_internal_wrapper(size_t n, size_t size)
 
 static void *IRAM_ATTR zalloc_internal_wrapper(size_t size)
 {
-	void *ptr = zalloc(size);
+	void *ptr = zalloc_at(0, size);
 	return ptr;
 }
 
