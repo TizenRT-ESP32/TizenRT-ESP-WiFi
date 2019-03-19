@@ -163,12 +163,19 @@ FAR void *malloc(size_t size)
 	return mem;
 #else /* CONFIG_BUILD_KERNEL */
 
-	int heap_idx;
+	int heap_idx = 0;
+	int prio_idx = 0;
 	void *ret;
+
+#ifdef CONFIG_RAM_MALLOC_PRIOR_INDEX
+	heap_idx = CONFIG_RAM_MALLOC_PRIOR_INDEX;
+	prio_idx = (CONFIG_RAM_MALLOC_PRIOR_INDEX > 0)? CONFIG_RAM_MALLOC_PRIOR_INDEX : 0;
+#endif
+
 #ifdef CONFIG_DEBUG_MM_HEAPINFO
 	ARCH_GET_RET_ADDRESS
 #endif
-	for (heap_idx = CONFIG_RAM_MALLOC_PRIOR_INDEX; heap_idx < CONFIG_MM_NHEAPS; heap_idx++) {
+	for (; heap_idx < CONFIG_MM_NHEAPS; heap_idx++) {
 #ifdef CONFIG_DEBUG_MM_HEAPINFO
 		ret = mm_malloc(&g_mmheap[heap_idx], size, retaddr);
 #else
@@ -178,6 +185,21 @@ FAR void *malloc(size_t size)
 			return ret;
 		}
 	}
+
+	/* Try to mm_calloc to other heaps */
+	if (prio_idx) {
+		for (heap_idx = 0; heap_idx < prio_idx; heap_idx++) {
+#ifdef CONFIG_DEBUG_MM_HEAPINFO
+			ret = mm_malloc(&g_mmheap[heap_idx], size, retaddr);
+#else
+			ret = mm_malloc(&g_mmheap[heap_idx], size);
+#endif
+			if (ret != NULL) {
+				return ret;
+			}
+		}
+	}
+
 	return NULL;
 #endif /* CONFIG_BUILD_KERNEL */
 }

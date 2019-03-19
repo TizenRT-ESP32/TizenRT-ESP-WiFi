@@ -80,7 +80,23 @@ int hello_main(int argc, char *argv[])
 			memset(malloctest, 0xAB, size);
 			printf("0x%x, 0x%x, 0x%x\n",malloctest[0], malloctest[1024], malloctest[10240]);
 		}
+
+		int *zalloctest = (int*)zalloc(size);
+		printf("zalloc  addr 0x%x\n",zalloctest);
+		if(zalloctest) {
+			printf("0x%x, 0x%x, 0x%x\n",zalloctest[0], zalloctest[1024], zalloctest[10240]);
+		}
+
+		int *calloctest = (int*)calloc(100 * 1024, sizeof(int));
+		printf("calloc	addr 0x%x\n",calloctest);
+		if(calloctest) {
+			printf("0x%x, 0x%x, 0x%x\n",calloctest[0], calloctest[1024], calloctest[10240]);
+		}
+
 		free(malloctest);
+		free(zalloctest);
+		free(calloctest);
+
 	}
 	return 0;
 }
